@@ -14,7 +14,7 @@ Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](h
 First, include [jQuery](http://jquery.com/) and [our script](script/) in your page:
 ```html
 <script src="//www.w3.org/scripts/jquery/2.1.4/jquery.min"></script>
-<script src="scripts/domain-or-group-info.js"></script>
+<script src="//w3c.github.io/apiary/scripts/domain-or-group-info.js"></script>
 ```
 
 Then, make sure you specify the ID of the *entity* you want, adding a *data-&#42;* attribute to the `html` element, eg:  
@@ -26,6 +26,12 @@ Finally, write *placeholders* wherever you'll need real data about that *entity*
 ```html
 The lead of this domain is: <span class="w3capi w3capi-lead"></span>.
 ```
+
+## Examples
+
+* [A simple *domain page*](https://w3c.github.io/apiary/domain.html)
+* [A simple *group page*](https://w3c.github.io/apiary/group.html)
+* A simple *personal page* [*pending*]
 
 ## Reference
 
