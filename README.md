@@ -9,17 +9,15 @@ Examples of use are also included.
 
 Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](https://api-test.w3.org/doc) for details.
 
-## Examples
-
-Try it out!
+## Live examples
 
 * [Simple *domain page*](https://w3c.github.io/apiary/domain.html)
 * [Simple *group page*](https://w3c.github.io/apiary/group.html)
-* Simple *personal page* [*pending*]
+* Simple *personal page* [pending]
 
 ## Getting started
 
-First, include [jQuery](http://jquery.com/) and [our script](blob/gh-pages/scripts/domain-or-group-info.js) in your page:
+First, include [jQuery](http://jquery.com/) and [our script](scripts/domain-or-group-info.js) in your page:
 ```html
 <script src="//www.w3.org/scripts/jquery/2.1.4/jquery.min"></script>
 <script src="//w3c.github.io/apiary/scripts/domain-or-group-info.js"></script>
@@ -48,6 +46,9 @@ For example:
 ```html
 <div class="w3capi w3capi-chairs">[Loading…]</div>
 ```
+
+For consistency (and to adhere to the [POLA](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)),
+the suffix part of these placeholders is equal to [the object keys returned by the API](https://api-test.w3.org/doc).
 
 These are all the supported placeholders:
 
