@@ -9,9 +9,17 @@ Examples of use are also included.
 
 Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](https://api-test.w3.org/doc) for details.
 
+## Examples
+
+Try it out!
+
+* [Simple *domain page*](https://w3c.github.io/apiary/domain.html)
+* [Simple *group page*](https://w3c.github.io/apiary/group.html)
+* Simple *personal page* [*pending*]
+
 ## Getting started
 
-First, include [jQuery](http://jquery.com/) and [our script](script/) in your page:
+First, include [jQuery](http://jquery.com/) and [our script](blob/gh-pages/scripts/domain-or-group-info.js) in your page:
 ```html
 <script src="//www.w3.org/scripts/jquery/2.1.4/jquery.min"></script>
 <script src="//w3c.github.io/apiary/scripts/domain-or-group-info.js"></script>
@@ -26,12 +34,6 @@ Finally, write *placeholders* wherever you'll need real data about that *entity*
 ```html
 The lead of this domain is: <span class="w3capi w3capi-lead"></span>.
 ```
-
-## Examples
-
-* [A simple *domain page*](https://w3c.github.io/apiary/domain.html)
-* [A simple *group page*](https://w3c.github.io/apiary/group.html)
-* A simple *personal page* [*pending*]
 
 ## Reference
 
