@@ -29,7 +29,9 @@ The lead of this domain is: <span class="w3capi w3capi-lead"></span>.
 
 ## Reference
 
-The `html` element should have one of these two *data-&#42;* attributes: `data-domain-id`, `data-group-id`.
+The `html` element should have one of these two *data-&#42;* attributes:
+* `data-domain-id`
+* `data-group-id`
 
 A placeholder is any element with a class beginning with `w3capi-`.
 Bear in mind that a new chunk of DOM will be inserted there; whatever that placeholder contains will be lost.
@@ -41,8 +43,8 @@ For example:
 
 These are all the supported placeholders:
 
-Placeholder          | Apply to        | Generated content
----------------------|-----------------|------------------
+Placeholder          | Applies to      | Generated content
+:--------------------|:----------------|:-----------------
 `w3capi-name`        | domains, groups | text
 `w3capi-lead`        | domains         | text
 `w3capi-activities`  | domains         | `<ul>`
