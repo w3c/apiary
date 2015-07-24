@@ -11,21 +11,26 @@ Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](h
 
 ## Getting started (quickly)
 
-1. Include this in your page:  
-  ```html
-  <script src="//www.w3.org/scripts/jquery/2.1.4/jquery.min"></script>
-  <script src="scripts/domain-or-group-info.js"></script>
-  ```
-2. Specify the ID of the *entity* you want, adding a *data-\** attribute to the `html` element, eg:  
-    ```html
-    <html data-domain-id="41381">
-    ```
-3. Write *placeholders* wherever you'll need real data about that *entity*, eg:  
-    The lead of this domain is: <span class="w3capi w3capi-lead"></span>.
+\1. Include this in your page:
+
+```html
+<script src="//www.w3.org/scripts/jquery/2.1.4/jquery.min"></script>
+<script src="scripts/domain-or-group-info.js"></script>
+```
+
+Specify the ID of the *entity* you want, adding a *data-&#42;* attribute to the `html` element, eg:  
+```html
+<html data-domain-id="41381">
+```
+
+Write *placeholders* wherever you'll need real data about that *entity*, eg:  
+```html
+The lead of this domain is: <span class="w3capi w3capi-lead"></span>.
+```
 
 ## Reference
 
-The `html` element should have one of these two *data-\** attributes: `data-domain-id`, `data-group-id`.
+The `html` element should have one of these two *data-&#42;* attributes: `data-domain-id`, `data-group-id`.
 
 A placeholder is any element with a class beginning with `w3capi-`.
 Bear in mind that a new chunk of DOM will be inserted there; whatever that placeholder contains will be lost.
@@ -33,7 +38,7 @@ We recommend that you have something in there giving users a hint that data is b
 For example:
 
 ```html
-<div class="w3capi w3capi-chairs">[Loading…]</div>`.
+<div class="w3capi w3capi-chairs">[Loading…]</div>
 ```
 
 These are the supported placeholders, the types of entities they apply to, and the kind of content they generate:
