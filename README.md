@@ -9,9 +9,9 @@ Examples of use are also included.
 
 Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](https://api-test.w3.org/doc) for details.
 
-## Getting started (quickly)
+## Getting started
 
-First, include this in your page:
+First, include [jQuery](http://jquery.com/) and [our script](script/) in your page:
 ```html
 <script src="//www.w3.org/scripts/jquery/2.1.4/jquery.min"></script>
 <script src="scripts/domain-or-group-info.js"></script>
@@ -29,7 +29,7 @@ The lead of this domain is: <span class="w3capi w3capi-lead"></span>.
 
 ## Reference
 
-The `html` element should have one of these two *data-&#42;* attributes:
+The `html` element should have *one* of these two *data-&#42;* attributes, and its value should be a valid ID:
 * `data-domain-id`
 * `data-group-id`
 
