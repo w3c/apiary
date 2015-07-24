@@ -11,19 +11,18 @@ Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](h
 
 ## Getting started (quickly)
 
-\1. Include this in your page:
-
+First, include this in your page:
 ```html
 <script src="//www.w3.org/scripts/jquery/2.1.4/jquery.min"></script>
 <script src="scripts/domain-or-group-info.js"></script>
 ```
 
-Specify the ID of the *entity* you want, adding a *data-&#42;* attribute to the `html` element, eg:  
+Then, make sure you specify the ID of the *entity* you want, adding a *data-&#42;* attribute to the `html` element, eg:  
 ```html
 <html data-domain-id="41381">
 ```
 
-Write *placeholders* wherever you'll need real data about that *entity*, eg:  
+Finally, write *placeholders* wherever you'll need real data about that *entity*, eg:  
 ```html
 The lead of this domain is: <span class="w3capi w3capi-lead"></span>.
 ```
@@ -36,18 +35,20 @@ A placeholder is any element with a class beginning with `w3capi-`.
 Bear in mind that a new chunk of DOM will be inserted there; whatever that placeholder contains will be lost.
 We recommend that you have something in there giving users a hint that data is being loaded dynamically.
 For example:
-
 ```html
 <div class="w3capi w3capi-chairs">[Loading…]</div>
 ```
 
-These are the supported placeholders, the types of entities they apply to, and the kind of content they generate:
-* `w3capi-name` (*domain*, *group*): text
-* `w3capi-lead` (*domain*): text
-* `w3capi-activities` (*domain*): unordered list
-* `w3capi-type` (*group*): text
-* `w3capi-description` (*group*): text
-* `w3capi-chairs` (*group*): unordered list
+These are all the supported placeholders:
+
+Placeholder          | Apply to        | Generated content
+---------------------|-----------------|------------------
+`w3capi-name`        | domains, groups | text
+`w3capi-lead`        | domains         | text
+`w3capi-activities`  | domains         | `<ul>`
+`w3capi-type`        | groups          | text
+`w3capi-description` | groups          | text
+`w3capi-chairs`      | groups          | `<ul>`
 
 The class `w3capi` isn't used by the JS libraries themselves, but we recommended you add anyway it to all placeholders for easier CSS styling.
 
