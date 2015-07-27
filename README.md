@@ -1,7 +1,7 @@
 
 # Apiary
 
-![Logo](logo.svg)
+![Logo](https://w3c.github.io/apiary/logo.svg)
 
 Apiary is a simple JavaScript library to leverage the W3C API.
 This library is intended to be used from W3C pages: domain pages, group pages, personal pages, etc.
