@@ -72,82 +72,97 @@
   };
 
   /**
-   * Get data from the W3C API recursively, given a type of item and its value, or a URL.
+   * Get basic data for a particular entity from the W3C API, given a type of item and its value.
    *
-   * @param {TYPE}     item     eg TYPE_DOMAIN_PAGE
-   * @param {Object}   value    eg “1234”
-   * @param {String}   url      eg “https://api-test.w3.org/domains/109/activities”
+   * @param {TYPE}     item     type of entity, eg TYPE_DOMAIN_PAGE
+   * @param {Object}   value    ID of the entity, eg “1234”
    * @param {Function} callback eg injectValues
    */
 
-  var getData = function(item, value, url, callback) {
-    var list, i;
-    if (TYPE_DOMAIN_PAGE === item && Object.keys(placeholders).length > 0) {
-      $.get(BASE_URL + 'domains/' + value, function(json) {
-        data.name = json.name;
-        data.lead = json._links.lead.title;
-        if (placeholders.activities) {
-          getData(TYPE_ACTIVITIES, null, json._links.activities.href, callback);
-        } else if (callback) {
-          callback.call();
-        }
-      });
-    } else if (TYPE_GROUP_PAGE === item && Object.keys(placeholders).length > 0) {
-      $.get(BASE_URL + 'groups/' + value, function(json) {
-        data.name = json.name;
-        data.type = json.type;
-        data.description = json.description;
-        if (placeholders.chairs) {
-          getData(TYPE_CHAIRS, null, json._links.chairs.href, callback);
-        } else if (callback) {
-          callback.call();
-        }
-      });
-    } else if (TYPE_USER_PAGE === item && Object.keys(placeholders).length > 0) {
-      $.get(BASE_URL + 'users/' + value, function(json) {
-        data.name = json.name;
-        data.family = json.family;
-        data.given = json.given;
-        data.photo = '<img alt="Photo of ' + data.name + '" src="' + getLargestPhotoUrl(json._links.photos) + '">';
-        if (placeholders.specifications) {
-          getData(TYPE_SPECIFICATIONS, null, json._links.specifications.href, callback);
-        } else if (callback) {
-          callback.call();
-        }
-      });
-    } else if (url) {
-      $.get(url, function(json) {
-        if (TYPE_ACTIVITIES === item) {
-          list = '<ul>';
-          for (i = 0; i < json._links.activities.length; i ++) {
-            list += '<li>' + json._links.activities[i].title + '</li>';
+  var getDataForType = function(item, value, callback) {
+    if (Object.keys(placeholders).length > 0) {
+      if (TYPE_DOMAIN_PAGE === item) {
+        $.get(BASE_URL + 'domains/' + value, function(json) {
+          data.name = json.name;
+          data.lead = json._links.lead.title;
+          if (placeholders.activities) {
+            digDownData(TYPE_ACTIVITIES, json._links.activities.href, callback);
+          } else if (callback) {
+            callback.call();
           }
-          list += '</ul>';
-          data.activities = list;
-        } else if (TYPE_CHAIRS === item) {
-          list = '<ul>';
-          for (i = 0; i < json._links.chairs.length; i ++) {
-            list += '<li>' + json._links.chairs[i].title + '</li>';
+        });
+      } else if (TYPE_GROUP_PAGE === item) {
+        $.get(BASE_URL + 'groups/' + value, function(json) {
+          data.name = json.name;
+          data.type = json.type;
+          data.description = json.description;
+          if (placeholders.chairs) {
+            digDownData(TYPE_CHAIRS, json._links.chairs.href, callback);
+          } else if (callback) {
+            callback.call();
           }
-          list += '</ul>';
-          data.chairs = list;
-        } else if (TYPE_SPECIFICATIONS === item) {
-          list = '<ul>';
-          for (i = 0; i < json._links.specifications.length; i ++) {
-            list += '<li>' + json._links.specifications[i].title + '</li>';
+        });
+      } else if (TYPE_USER_PAGE === item) {
+        $.get(BASE_URL + 'users/' + value, function(json) {
+          data.name = json.name;
+          data.family = json.family;
+          data.given = json.given;
+          data.photo = '<img alt="Photo of ' + data.name + '" src="' + getLargestPhotoUrl(json._links.photos) + '">';
+          if (placeholders.specifications) {
+            digDownData(TYPE_SPECIFICATIONS, json._links.specifications.href, callback);
+          } else if (callback) {
+            callback.call();
           }
-          list += '</ul>';
-          data.specifications = list;
-        }
+        });
+      } else {
         if (callback) {
           callback.call();
         }
-      });
+      }
     } else {
       if (callback) {
         callback.call();
       }
     }
+  };
+
+  /**
+   * Get data recursively, given a URL and the type of data.
+   *
+   * @param {TYPE}     item     eg TYPE_ACTIVITIES
+   * @param {String}   url      eg “https://api-test.w3.org/domains/109/activities”
+   * @param {Function} callback eg injectValues
+   */
+
+  var digDownData = function(item, url, callback) {
+    var list, i;
+    $.get(url, function(json) {
+      if (TYPE_ACTIVITIES === item) {
+        list = '<ul>';
+        for (i = 0; i < json._links.activities.length; i ++) {
+          list += '<li>' + json._links.activities[i].title + '</li>';
+        }
+        list += '</ul>';
+        data.activities = list;
+      } else if (TYPE_CHAIRS === item) {
+        list = '<ul>';
+        for (i = 0; i < json._links.chairs.length; i ++) {
+          list += '<li>' + json._links.chairs[i].title + '</li>';
+        }
+        list += '</ul>';
+        data.chairs = list;
+      } else if (TYPE_SPECIFICATIONS === item) {
+        list = '<ul>';
+        for (i = 0; i < json._links.specifications.length; i ++) {
+          list += '<li>' + json._links.specifications[i].title + '</li>';
+        }
+        list += '</ul>';
+        data.specifications = list;
+      }
+      if (callback) {
+        callback.call();
+      }
+    });
   };
 
   /**
@@ -191,7 +206,7 @@
 
     inferTypeAndId();
     findPlaceholders();
-    getData(type, id, null, injectValues);
+    getDataForType(type, id, injectValues);
 
   });
 
