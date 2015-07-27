@@ -10,8 +10,8 @@ Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](h
 
 ## Live examples
 
-* [Simple *domain page*](https://w3c.github.io/apiary/domain.html)
-* [Simple *group page*](https://w3c.github.io/apiary/group.html)
+* [Simple *domain page*](https://w3c.github.io/apiary/examples/domain.html)
+* [Simple *group page*](https://w3c.github.io/apiary/examples/group.html)
 * Simple *personal page* [pending]
 
 ## Getting started
@@ -60,7 +60,7 @@ Placeholder          | Applies to      | Generated content
 `apiary-description` | groups          | text
 `apiary-chairs`      | groups          | `<ul>`
 
-The class `apiary` isn't used by the JS libraries themselves, but we recommended you add anyway it to all placeholders for easier CSS styling.
+The additional class `apiary` is ignored by Apiary itself, but we recommended you add anyway it to all placeholders in your documents, for easier CSS styling.
 
 ## Credits
 

@@ -5,7 +5,7 @@
 
   // Pseudo-constants:
   var BASE_URL           = 'https://api-test.w3.org/';
-  var W3CAPI_PLACEHOLDER = /[\^\ ]w3capi-([^\ ]+)/g;
+  var APIARY_PLACEHOLDER = /[\^\ ]apiary-([^\ ]+)/g;
   var TYPE_DOMAIN_PAGE   = 0;
   var TYPE_GROUP_PAGE    = 1;
   var TYPE_ACTIVITIES    = 2;
@@ -35,7 +35,7 @@
   };
 
   /**
-   * Traverse the DOM in search of all elements with class “w3capi-*”.
+   * Traverse the DOM in search of all elements with class “apiary-*”.
    *
    * After this function is done, “placeholders” should be an object containing all keys found in the DOM;
    * and for every key, an array of all elements mentioning that key.
@@ -51,17 +51,17 @@
    */
 
   var findPlaceholders = function() {
-    var candidates = $('[class^="w3capi"]');
+    var candidates = $('[class^="apiary"]');
     var cand, match;
     for (var c = 0; c < candidates.length; c ++) {
       cand = $(candidates[c]);
-      match = W3CAPI_PLACEHOLDER.exec(cand.attr('class'));
+      match = APIARY_PLACEHOLDER.exec(cand.attr('class'));
       while (match) {
         if (!placeholders[match[1]]) {
           placeholders[match[1]] = [];
         }
         placeholders[match[1]].push(cand);
-      match = W3CAPI_PLACEHOLDER.exec(cand.attr('class'));
+      match = APIARY_PLACEHOLDER.exec(cand.attr('class'));
       }
     }
   };
