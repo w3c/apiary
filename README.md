@@ -12,7 +12,7 @@ Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](h
 
 * [Simple *domain page*](https://w3c.github.io/apiary/examples/domain.html)
 * [Simple *group page*](https://w3c.github.io/apiary/examples/group.html)
-* Simple *personal page* [pending]
+* [Simple *user page*](https://w3c.github.io/apiary/examples/user.html)
 
 ## Getting started
 
@@ -37,6 +37,7 @@ The lead of this domain is: <span class="apiary apiary-lead"></span>.
 The `html` element should have *one* of these two *data-&#42;* attributes, and its value should be a valid ID:
 * `data-domain-id`
 * `data-group-id`
+* `data-user-id` (use [the user hash](https://api-test.w3.org/doc#get--users-{hash}))
 
 A placeholder is any element with a class beginning with `apiary-`.
 Bear in mind that a new chunk of DOM will be inserted there; whatever that placeholder contains will be lost.
@@ -51,14 +52,18 @@ the suffix part of these placeholders is equal to [the object keys returned by t
 
 These are all the supported placeholders:
 
-Placeholder          | Applies to      | Generated content
-:--------------------|:----------------|:-----------------
-`apiary-name`        | domains, groups | text
-`apiary-lead`        | domains         | text
-`apiary-activities`  | domains         | `<ul>`
-`apiary-type`        | groups          | text
-`apiary-description` | groups          | text
-`apiary-chairs`      | groups          | `<ul>`
+Placeholder             | Applies to             | Generated content | Comment
+:-----------------------|:-----------------------|:------------------|:----------------------
+`apiary-activities`     | domains                | `<ul>`            |
+`apiary-chairs`         | groups                 | `<ul>`            |
+`apiary-description`    | groups                 | text              |
+`apiary-family`         | users                  | text              |
+`apiary-given`          | users                  | text              |
+`apiary-lead`           | domains                | text              |
+`apiary-name`           | domains, groups, users | text              |
+`apiary-photo`          | users                  | `<img>`           | Largest size available
+`apiary-specifications` | users                  | `<ul>`            |
+`apiary-type`           | groups                 | text              |
 
 The additional class `apiary` is ignored by Apiary itself, but we recommended you add anyway it to all placeholders in your documents, for easier CSS styling.
 

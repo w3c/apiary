@@ -4,12 +4,14 @@
 (function() {
 
   // Pseudo-constants:
-  var BASE_URL           = 'https://api-test.w3.org/';
-  var APIARY_PLACEHOLDER = /[\^\ ]apiary-([^\ ]+)/g;
-  var TYPE_DOMAIN_PAGE   = 0;
-  var TYPE_GROUP_PAGE    = 1;
-  var TYPE_ACTIVITIES    = 2;
-  var TYPE_CHAIRS        = 3;
+  var BASE_URL            = 'https://api-test.w3.org/';
+  var APIARY_PLACEHOLDER  = /[\^\ ]apiary-([^\ ]+)/g;
+  var TYPE_DOMAIN_PAGE    = 0;
+  var TYPE_GROUP_PAGE     = 1;
+  var TYPE_USER_PAGE      = 2;
+  var TYPE_ACTIVITIES     = 3;
+  var TYPE_CHAIRS         = 4;
+  var TYPE_SPECIFICATIONS = 5;
 
   // "Global" variables:
   var type;
@@ -31,6 +33,9 @@
     } else if (html.data('group-id')) {
       type = TYPE_GROUP_PAGE;
       id = html.data('group-id');
+    } else if (html.data('user-id')) {
+      type = TYPE_USER_PAGE;
+      id = html.data('user-id');
     }
   };
 
@@ -98,6 +103,18 @@
           callback.call();
         }
       });
+    } else if (TYPE_USER_PAGE === item && Object.keys(placeholders).length > 0) {
+      $.get(BASE_URL + 'users/' + value, function(json) {
+        data.name = json.name;
+        data.family = json.family;
+        data.given = json.given;
+        data.photo = '<img alt="Photo of ' + data.name + '" src="' + getLargestPhotoUrl(json._links.photos) + '">';
+        if (placeholders.specifications) {
+          getData(TYPE_SPECIFICATIONS, null, json._links.specifications.href, callback);
+        } else if (callback) {
+          callback.call();
+        }
+      });
     } else if (url) {
       $.get(url, function(json) {
         if (TYPE_ACTIVITIES === item) {
@@ -114,6 +131,13 @@
           }
           list += '</ul>';
           data.chairs = list;
+        } else if (TYPE_SPECIFICATIONS === item) {
+          list = '<ul>';
+          for (i = 0; i < json._links.specifications.length; i ++) {
+            list += '<li>' + json._links.specifications[i].title + '</li>';
+          }
+          list += '</ul>';
+          data.specifications = list;
         }
         if (callback) {
           callback.call();
@@ -138,6 +162,21 @@
         }
       }
     }
+  };
+
+  /**
+   * Find the largest photo available, for a user
+   */
+
+  var getLargestPhotoUrl = function(photos) {
+    var VALUE = {large: 2, thumbnail: 1, tiny: 0};
+    var result;
+    for (var i = 0; i < photos.length; i ++) {
+      if (!result || VALUE[photos[i].name] > VALUE[result.name]) {
+        result = photos[i];
+      }
+    }
+    return result.href;
   };
 
   /**
