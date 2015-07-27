@@ -86,8 +86,6 @@
           data.lead = json._links.lead.title;
           if (placeholders.activities) {
             digDownData(TYPE_ACTIVITIES, json._links.activities.href, callback);
-          } else if (callback) {
-            callback.call();
           }
         });
       } else if (TYPE_GROUP_PAGE === item) {
@@ -97,8 +95,6 @@
           data.description = json.description;
           if (placeholders.chairs) {
             digDownData(TYPE_CHAIRS, json._links.chairs.href, callback);
-          } else if (callback) {
-            callback.call();
           }
         });
       } else if (TYPE_USER_PAGE === item) {
@@ -109,19 +105,12 @@
           data.photo = '<img alt="Photo of ' + data.name + '" src="' + getLargestPhotoUrl(json._links.photos) + '">';
           if (placeholders.specifications) {
             digDownData(TYPE_SPECIFICATIONS, json._links.specifications.href, callback);
-          } else if (callback) {
-            callback.call();
           }
         });
-      } else {
-        if (callback) {
-          callback.call();
-        }
       }
-    } else {
-      if (callback) {
-        callback.call();
-      }
+    }
+    if (callback) {
+      callback.call();
     }
   };
 
