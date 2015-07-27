@@ -36,7 +36,7 @@ The lead of this domain is: <span class="apiary apiary-lead"></span>.
 
 ## Reference
 
-The `html` element should have *one* of these two *data-&#42;* attributes, and its value should be a valid ID:
+The `html` element should have *one* of these *data-&#42;* attributes, and its value should be a valid ID:
 * `data-domain-id`
 * `data-group-id`
 * `data-user-id` (use [the user hash](https://api-test.w3.org/doc#get--users-{hash}))
@@ -52,20 +52,22 @@ For example:
 For consistency (and to adhere to the [POLA](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)),
 the suffix part of these placeholders is equal to [the object keys returned by the API](https://api-test.w3.org/doc).
 
-These are all the supported placeholders:
+These are all the supported placeholders now:
 
-Placeholder             | Applies to             | Generated content | Comment
-:-----------------------|:-----------------------|:------------------|:----------------------
-`apiary-activities`     | domains                | `<ul>`            |
-`apiary-chairs`         | groups                 | `<ul>`            |
-`apiary-description`    | groups                 | text              |
-`apiary-family`         | users                  | text              |
-`apiary-given`          | users                  | text              |
-`apiary-lead`           | domains                | text              |
-`apiary-name`           | domains, groups, users | text              |
-`apiary-photo`          | users                  | `<img>`           | Largest size available
-`apiary-specifications` | users                  | `<ul>`            |
-`apiary-type`           | groups                 | text              |
+Placeholder             | Applies to             | Generated content
+:-----------------------|:-----------------------|:-----------------
+`apiary-activities`     | domains                | `<ul>`
+`apiary-chairs`         | groups                 | `<ul>`
+`apiary-description`    | groups                 | text
+`apiary-family`         | users                  | text
+`apiary-given`          | users                  | text
+`apiary-lead`           | domains                | text
+`apiary-name`           | domains, groups, users | text
+`apiary-photo`¹         | users                  | `<img>`
+`apiary-specifications` | users                  | `<ul>`
+`apiary-type`           | groups                 | text
+
+¹Largest size returned by the API.
 
 The additional class `apiary` is ignored by Apiary itself, but we recommended you add anyway it to all placeholders in your documents, for easier CSS styling.
 
