@@ -37,7 +37,7 @@
   /**
    * Traverse the DOM in search of all elements with class “w3capi-*”.
    *
-   * After this function is done, “placeholders” should be an object containing all keys found in the DOM,
+   * After this function is done, “placeholders” should be an object containing all keys found in the DOM;
    * and for every key, an array of all elements mentioning that key.
    * For example:
    * {
@@ -45,8 +45,8 @@
    *     <title> element,
    *     <h1> element
    *   ],
-   *   lead: <div> element,
-   *   activities: <div> element
+   *   lead: [<div> element],
+   *   activities: [<div> element]
    * }
    */
 
@@ -67,9 +67,9 @@
   };
 
   /**
-   * Get data from the W3C API recursively, given a type of item, and its value.
+   * Get data from the W3C API recursively, given a type of item and its value, or a URL.
    *
-   * @param {TYPE}     item,     eg “TYPE_DOMAIN_PAGE”
+   * @param {TYPE}     item,     eg TYPE_DOMAIN_PAGE
    * @param {Object}   value,    eg “1234”
    * @param {String}   url,      eg “https://api-test.w3.org/domains/109/activities”
    * @param {Function} callback, eg injectValues
