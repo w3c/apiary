@@ -74,10 +74,10 @@
   /**
    * Get data from the W3C API recursively, given a type of item and its value, or a URL.
    *
-   * @param {TYPE}     item,     eg TYPE_DOMAIN_PAGE
-   * @param {Object}   value,    eg “1234”
-   * @param {String}   url,      eg “https://api-test.w3.org/domains/109/activities”
-   * @param {Function} callback, eg injectValues
+   * @param {TYPE}     item     eg TYPE_DOMAIN_PAGE
+   * @param {Object}   value    eg “1234”
+   * @param {String}   url      eg “https://api-test.w3.org/domains/109/activities”
+   * @param {Function} callback eg injectValues
    */
 
   var getData = function(item, value, url, callback) {
@@ -165,7 +165,9 @@
   };
 
   /**
-   * Find the largest photo available, for a user
+   * Find the largest photo available from an array of them.
+   *
+   * @param {Array} photos eg, [{name: 'large', href: 'size-L.jpg'}, {name: 'medium', href: 'size-M.jpg'}]
    */
 
   var getLargestPhotoUrl = function(photos) {
@@ -181,6 +183,8 @@
 
   /**
    * Main function.
+   *
+   * I know everything you need to know, baby.
    */
 
   $(document).ready(function() {
