@@ -29,7 +29,7 @@ Then, make sure you specify the ID of the *entity* you want, adding a *data-&#42
 <html data-domain-id="41381">
 ```
 
-Finally, write *placeholders* wherever you'll need real data about that *entity*, eg:  
+Finally, write *placeholders* wherever you want real data about that *entity*, eg:  
 ```html
 The lead of this domain is: <span class="apiary apiary-lead"></span>.
 ```
@@ -63,11 +63,11 @@ Placeholder             | Applies to             | Generated content
 `apiary-given`          | users                  | text
 `apiary-lead`           | domains                | text
 `apiary-name`           | domains, groups, users | text
-`apiary-photo`¹         | users                  | `<img>`
+`apiary-photo` ¹        | users                  | `<img>`
 `apiary-specifications` | users                  | `<ul>`
 `apiary-type`           | groups                 | text
 
-¹Largest size returned by the API.
+¹ Largest size returned by the API, if there are several.
 
 The additional class `apiary` is ignored by Apiary itself, but we recommended you add anyway it to all placeholders in your documents, for easier CSS styling.
 
