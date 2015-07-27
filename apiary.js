@@ -26,16 +26,15 @@
    */
 
   var inferTypeAndId = function() {
-    var html = $('html');
-    if (html.data('domain-id')) {
+    if ($('[data-domain-id]').length > 0) {
       type = TYPE_DOMAIN_PAGE;
-      id = html.data('domain-id');
-    } else if (html.data('group-id')) {
+      id = $('[data-domain-id]').data('domain-id');
+    } else if ($('[data-group-id]').length > 0) {
       type = TYPE_GROUP_PAGE;
-      id = html.data('group-id');
-    } else if (html.data('user-id')) {
+      id = $('[data-group-id]').data('group-id');
+    } else if ($('[data-user-id]').length > 0) {
       type = TYPE_USER_PAGE;
-      id = html.data('user-id');
+      id = $('[data-user-id]').data('user-id');
     }
   };
 
