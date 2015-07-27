@@ -24,7 +24,7 @@ First, include [jQuery](http://jquery.com/) and [Apiary](apiary.js) in your page
 <script src="//w3c.github.io/apiary/apiary.js"></script>
 ```
 
-Then, make sure you specify the ID of the *entity* you want, adding a *data-&#42;* attribute to the `html` element, eg:  
+Then, make sure you specify the ID of the *entity* you want, adding a *data-&#42;* attribute to a container element, eg:  
 ```html
 <html data-domain-id="41381">
 ```
@@ -36,7 +36,7 @@ The lead of this domain is: <span class="apiary apiary-lead"></span>.
 
 ## Reference
 
-The `html` element should have *one* of these *data-&#42;* attributes, and its value should be a valid ID:
+The container element should have *one* of these *data-&#42;* attributes, and its value should be a valid ID:
 * `data-domain-id`
 * `data-group-id`
 * `data-user-id` (use [the user hash](https://api-test.w3.org/doc#get--users-{hash}))
