@@ -69,7 +69,7 @@ Placeholder             | Applies to             | Generated content
 
 ¹ Largest size returned by the API, if there are several.
 
-The additional class `apiary` is ignored by Apiary itself, but we recommended you add anyway it to all placeholders in your documents, for easier CSS styling.
+The additional class `apiary` is ignored by Apiary itself but you may wish to include it anyway to all placeholders in your documents for easier CSS styling.
 
 ## Credits
 
