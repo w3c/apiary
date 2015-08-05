@@ -46,7 +46,7 @@ Bear in mind that a new chunk of DOM will be inserted there; whatever that place
 We recommend that you have something in there giving users a hint that data is being loaded dynamically.
 For example:
 ```html
-<div class="apiary apiary-chairs">[Loading…]</div>
+<div class="apiary-chairs">[Loading…]</div>
 ```
 
 For consistency (and to adhere to the [POLA](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)),
@@ -69,7 +69,7 @@ Placeholder             | Applies to             | Generated content
 
 ¹ Largest size returned by the API, if there are several.
 
-The additional class `apiary` is ignored by Apiary itself but you may wish to include it anyway to all placeholders in your documents for easier CSS styling.
+The additional class `apiary` in the example files is ignored by Apiary itself but you may wish to include it anyway to all placeholders in your documents for easier CSS styling.
 
 ## Credits
 
