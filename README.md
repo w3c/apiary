@@ -31,7 +31,7 @@ Then, make sure you specify the ID of the *entity* you want, adding a *data-&#42
 
 Finally, write *placeholders* wherever you want real data about that *entity*, eg:  
 ```html
-The lead of this domain is: <span class="apiary apiary-lead"></span>.
+The lead of this domain is: <span class="apiary-lead"></span>.
 ```
 
 ## Reference
