@@ -8,28 +8,34 @@ This library is intended to be used from W3C pages: domain pages, group pages, p
 With Apiary, you can inject data that is retrieved using the W3C API, in a declarative way using *placeholders*.
 Examples are also provided.
 
-Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](https://api-test.w3.org/doc) for details.
+Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](https://w3c.github.io/w3c-api/) for details.
 
 ## Live examples
 
-* [Simple *domain page*](https://w3c.github.io/apiary/examples/domain.html)
-* [Simple *group page*](https://w3c.github.io/apiary/examples/group.html)
-* [Simple *user page*](https://w3c.github.io/apiary/examples/user.html)
+* [*Domain page*](https://w3c.github.io/apiary/examples/domain.html)
+* [*Group page*](https://w3c.github.io/apiary/examples/group.html)
+* [*User page*](https://w3c.github.io/apiary/examples/user.html)
 
 ## Getting started
 
-First, include [jQuery](http://jquery.com/) and [Apiary](apiary.js) in your page:
+1. Include [jQuery](http://jquery.com/) and [Apiary](apiary.js) in your page:
 ```html
 <script src="//www.w3.org/scripts/jquery/2.1.4/jquery.min"></script>
 <script src="//w3c.github.io/apiary/apiary.js"></script>
 ```
-
-Then, make sure you specify the ID of the *entity* you want, adding a *data-&#42;* attribute to a container element, eg:  
+2. Specify your W3C API key, adding a *data-api-key* attribute to the HTML element, eg:  
 ```html
-<html data-domain-id="41381">
+<html data-api-key="abc123def456">
+```
+You can get an API key very easily; refer to [the documentation](https://w3c.github.io/w3c-api/#apikeys).
+(The examples provided here work with an API key that is intended only for testing Apiary.)
+
+3. Specify the ID of the *entity* you want, adding a *data-&#42;* attribute to a container element, eg:  
+```html
+<main data-domain-id="41381">
 ```
 
-Finally, write *placeholders* wherever you want real data about that *entity*, eg:  
+4. Finally, add *placeholders* wherever you want real data about that *entity*, eg:  
 ```html
 The lead of this domain is: <span class="apiary-lead"></span>.
 ```
