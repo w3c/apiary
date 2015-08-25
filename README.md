@@ -54,7 +54,7 @@ The lead of this domain is: <span class="apiary-lead"></span>.
 The container element should have *one* of these *data-&#42;* attributes, and its value should be a valid ID:
 * `data-domain-id`
 * `data-group-id`
-* `data-user-id` (use the *user hash* \[TO-DO: link here to a publicly-readable URL for the documentation\])
+* `data-user-id` (use the **user hash** \[TO-DO: link to relevant section in documentation\])
 
 A placeholder is any element with a class beginning with `apiary-`.
 Bear in mind that a new chunk of DOM will be inserted there; whatever that placeholder contains will be lost.
@@ -65,7 +65,7 @@ For example:
 ```
 
 For consistency (and to adhere to the [POLA](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)),
-the suffix part of these placeholders is equal to the object keys returned by the API \[TO-DO: link here to a publicly-readable URL for the documentation\].
+the suffix part of these placeholders is equal to the object keys returned by the API \[TO-DO: link to relevant section in documentation\].
 
 These are all the supported placeholders now:
 
