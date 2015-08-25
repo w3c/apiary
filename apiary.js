@@ -4,28 +4,58 @@
 (function() {
 
   // Pseudo-constants:
+  var VERSION             = '0.2.0';
   var BASE_URL            = 'https://api-test.w3.org/';
   var APIARY_PLACEHOLDER  = /[\^\ ]apiary-([^\ ]+)/g;
-  var TYPE_DOMAIN_PAGE    = 0;
-  var TYPE_GROUP_PAGE     = 1;
-  var TYPE_USER_PAGE      = 2;
-  var TYPE_ACTIVITIES     = 3;
-  var TYPE_CHAIRS         = 4;
-  var TYPE_SPECIFICATIONS = 5;
+  var TYPE_DOMAIN_PAGE    = 1;
+  var TYPE_GROUP_PAGE     = 2;
+  var TYPE_USER_PAGE      = 3;
+  var TYPE_ACTIVITIES     = 4;
+  var TYPE_CHAIRS         = 5;
+  var TYPE_SPECIFICATIONS = 6;
 
-  // "Global" variables:
+  // “Global” variables:
+  var apiKey;
   var type;
   var id;
   var placeholders = {};
   var data         = {};
 
   /**
-   * Infer the type of page (domain, group…) and the ID of the corresponding entity.
+   * Main function.
    *
-   * After this function is done, variables “type” and “id” should have their right values set.
+   * I know everything you need to know, baby.
+   */
+
+  $(document).ready(function() {
+
+    inferTypeAndId();
+
+    if (apiKey && type && id) {
+      findPlaceholders();
+      getDataForType(type, id, injectValues);
+    } else {
+      window.alert('Apiary ' + VERSION + '\n' +
+        'ERROR: could not get all necessary metadata.\n' +
+        'apiKey: “' + apiKey + '”\n' +
+        'type: “' + type + '”\n' +
+        'id: “' + id + '”');
+    }
+
+  });
+
+  /**
+   * Infer the type of page (domain, group…) and the ID of the corresponding entity; resolve API key.
+   *
+   * After this function is done, variables “apiKey”, “type” and “id” should have their right values set.
    */
 
   var inferTypeAndId = function() {
+
+    if (1 === $('html[data-api-key]').length) {
+      apiKey = $('html[data-api-key]').data('api-key');
+    }
+
     if ($('[data-domain-id]').length > 0) {
       type = TYPE_DOMAIN_PAGE;
       id = $('[data-domain-id]').data('domain-id');
@@ -36,6 +66,7 @@
       type = TYPE_USER_PAGE;
       id = $('[data-user-id]').data('user-id');
     }
+
   };
 
   /**
@@ -65,7 +96,7 @@
           placeholders[match[1]] = [];
         }
         placeholders[match[1]].push(cand);
-      match = APIARY_PLACEHOLDER.exec(cand.attr('class'));
+        match = APIARY_PLACEHOLDER.exec(cand.attr('class'));
       }
     }
   };
@@ -81,7 +112,7 @@
   var getDataForType = function(item, value, callback) {
     if (Object.keys(placeholders).length > 0) {
       if (TYPE_DOMAIN_PAGE === item) {
-        $.get(BASE_URL + 'domains/' + value, function(json) {
+        get(BASE_URL + 'domains/' + value, function(json) {
           data.name = json.name;
           data.lead = json._links.lead.title;
           if (placeholders.activities) {
@@ -91,7 +122,7 @@
           }
         });
       } else if (TYPE_GROUP_PAGE === item) {
-        $.get(BASE_URL + 'groups/' + value, function(json) {
+        get(BASE_URL + 'groups/' + value, function(json) {
           data.name = json.name;
           data.type = json.type;
           data.description = json.description;
@@ -102,7 +133,7 @@
           }
         });
       } else if (TYPE_USER_PAGE === item) {
-        $.get(BASE_URL + 'users/' + value, function(json) {
+        get(BASE_URL + 'users/' + value, function(json) {
           data.name = json.name;
           data.family = json.family;
           data.given = json.given;
@@ -135,7 +166,7 @@
 
   var digDownData = function(item, url, callback) {
     var list, i;
-    $.get(url, function(json) {
+    get(url, function(json) {
       if (TYPE_ACTIVITIES === item) {
         list = '<ul>';
         for (i = 0; i < json._links.activities.length; i ++) {
@@ -166,7 +197,7 @@
 
   /**
    * Inject values retrieved from the API into the relevant elements of the DOM.
-   * While dynamically writing content, set aria-busy attribute to "true" for screen-readers.
+   * While dynamically writing content, set aria-busy attribute to “true” for screen-readers.
    */
 
   var injectValues = function() {
@@ -189,6 +220,23 @@
   /**
    * Find the largest photo available from an array of them.
    *
+   * @param {String}   url      target URL, including base URL and parameters, but not an API key.
+   * @param {Function} callback <code>function(json){}</code>
+   */
+
+  var get = function(url, callback) {
+
+    $.ajax({
+      headers: {'Authorization': 'W3C-API apikey="' + apiKey + '"'},
+      url:     url,
+      success: callback
+    });
+
+  };
+
+  /**
+   * Find the largest photo available from an array of them.
+   *
    * @param {Array} photos eg, [{name: 'large', href: 'size-L.jpg'}, {name: 'medium', href: 'size-M.jpg'}]
    */
 
@@ -202,20 +250,6 @@
     }
     return result.href;
   };
-
-  /**
-   * Main function.
-   *
-   * I know everything you need to know, baby.
-   */
-
-  $(document).ready(function() {
-
-    inferTypeAndId();
-    findPlaceholders();
-    getDataForType(type, id, injectValues);
-
-  });
 
 })();
 
