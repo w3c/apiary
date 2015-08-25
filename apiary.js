@@ -4,7 +4,7 @@
 (function() {
 
   // Pseudo-constants:
-  var VERSION             = '0.1.2';
+  var VERSION             = '0.2.0';
   var BASE_URL            = 'https://api-test.w3.org/';
   var APIARY_PLACEHOLDER  = /[\^\ ]apiary-([^\ ]+)/g;
   var TYPE_DOMAIN_PAGE    = 1;
