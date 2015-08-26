@@ -210,7 +210,7 @@
   };
 
   /**
-   * Find the largest photo available from an array of them.
+   * GET data from the API, using the API key.
    *
    * @param {String}   url      target URL, including base URL and parameters, but not an API key.
    * @param {Function} callback <code>function(json){}</code>
@@ -218,11 +218,15 @@
 
   var get = function(url, callback) {
 
-    $.ajax({
-      headers: {'Authorization': 'W3C-API apikey="' + apiKey + '"'},
-      url:     url,
-      success: callback
-    });
+    var newUrl = url;
+
+    if (-1 === newUrl.indexOf('?')) {
+      newUrl += '?apikey=' + apiKey;
+    } else if (-1 === newUrl.toLowerCase().indexOf('apikey=')) {
+      newUrl += '&apikey=' + apiKey;
+    }
+
+    $.get(newUrl, callback);
 
   };
 
