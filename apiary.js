@@ -197,23 +197,15 @@
 
   /**
    * Inject values retrieved from the API into the relevant elements of the DOM.
-   * While dynamically writing content, set aria-busy attribute to “true” for screen-readers.
    */
 
   var injectValues = function() {
-    var live = $('[aria-live]');
-    if (live) {
-      live.attr('aria-busy', 'true');
-    }
     for (var i in placeholders) {
       if (placeholders.hasOwnProperty(i)) {
         for (var j in placeholders[i]) {
           placeholders[i][j].html(data[i]);
         }
       }
-    }
-    if (live) {
-      live.attr('aria-busy', 'false');
     }
   };
 
