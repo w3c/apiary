@@ -8,7 +8,8 @@ This library is intended to be used from W3C pages: domain pages, group pages, p
 With Apiary, you can inject data that is retrieved using the W3C API, in a declarative way using *placeholders*.
 Examples are also provided.
 
-Refer to [the W3C API](https://github.com/w3c/w3c-api) and [its documentation](https://w3c.github.io/w3c-api/) for details.
+Refer to [the W3C API](https://github.com/w3c/w3c-api) and its documentation for details
+\[[overview](https://w3c.github.io/w3c-api/); [reference](https://api-test.w3.org/doc)\].
 
 ## Live examples
 
@@ -54,7 +55,7 @@ The lead of this domain is: <span class="apiary-lead"></span>.
 The container element should have *one* of these *data-&#42;* attributes, and its value should be a valid ID:
 * `data-domain-id`
 * `data-group-id`
-* `data-user-id` (use the **user hash** \[TO-DO: link to relevant section in documentation\])
+* `data-user-id` (use [the **user hash**](https://api-test.w3.org/doc#get--users-%7Bhash%7D))
 
 A placeholder is any element with a class beginning with `apiary-`.
 Bear in mind that a new chunk of DOM will be inserted there; whatever that placeholder contains will be lost.
@@ -65,7 +66,7 @@ For example:
 ```
 
 For consistency (and to adhere to the [POLA](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)),
-the suffix part of these placeholders is equal to the object keys returned by the API \[TO-DO: link to relevant section in documentation\].
+the suffix part of these placeholders is equal to [the object keys returned by the API](https://api-test.w3.org/doc).
 
 These are all the supported placeholders now:
 
