@@ -10,7 +10,7 @@
   var TYPE_DOMAIN_PAGE    = 1;
   var TYPE_GROUP_PAGE     = 2;
   var TYPE_USER_PAGE      = 3;
-  var TYPE_ACTIVITIES     = 4;
+  var TYPE_GROUPS         = 4;
   var TYPE_CHAIRS         = 5;
   var TYPE_SPECIFICATIONS = 6;
 
@@ -81,7 +81,7 @@
    *     <h1> element
    *   ],
    *   lead: [<div> element],
-   *   activities: [<div> element]
+   *   groups: [<div> element]
    * }
    */
 
@@ -115,8 +115,8 @@
         get(BASE_URL + 'domains/' + value, function(json) {
           data.name = json.name;
           data.lead = json._links.lead.title;
-          if (placeholders.activities) {
-            digDownData(TYPE_ACTIVITIES, json._links.activities.href, callback);
+          if (placeholders.groups) {
+            digDownData(TYPE_GROUPS, json._links.groups.href, callback);
           } else if (callback) {
             callback.call();
           }
@@ -159,21 +159,21 @@
   /**
    * Get data recursively, given a URL and the type of data.
    *
-   * @param {TYPE}     item     eg TYPE_ACTIVITIES
-   * @param {String}   url      eg “https://api-test.w3.org/domains/109/activities”
+   * @param {TYPE}     item     eg TYPE_GROUPS
+   * @param {String}   url      eg “https://api-test.w3.org/domains/109/groups”
    * @param {Function} callback eg injectValues
    */
 
   var digDownData = function(item, url, callback) {
     var list, i;
     get(url, function(json) {
-      if (TYPE_ACTIVITIES === item) {
+      if (TYPE_GROUPS === item) {
         list = '<ul>';
-        for (i = 0; i < json._links.activities.length; i ++) {
-          list += '<li>' + json._links.activities[i].title + '</li>';
+        for (i = 0; i < json._links.groups.length; i ++) {
+          list += '<li>' + json._links.groups[i].title + '</li>';
         }
         list += '</ul>';
-        data.activities = list;
+        data.groups = list;
       } else if (TYPE_CHAIRS === item) {
         list = '<ul>';
         for (i = 0; i < json._links.chairs.length; i ++) {
