@@ -23,7 +23,7 @@ Refer to [the W3C API](https://github.com/w3c/w3c-api) and its documentation for
 
 Include [jQuery](http://jquery.com/) and [Apiary](apiary.js) in your page:  
 ```html
-<script src="//www.w3.org/scripts/jquery/2.1.4/jquery.min"></script>
+<script src="//www.w3.org/scripts/jquery/2.1/jquery.min"></script>
 <script src="//w3c.github.io/apiary/apiary.js"></script>
 ```
 
