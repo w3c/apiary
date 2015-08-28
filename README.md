@@ -72,7 +72,7 @@ These are all the supported placeholders now:
 
 Placeholder             | Applies to             | Generated content
 :-----------------------|:-----------------------|:-----------------
-`apiary-activities`     | domains                | `<ul>`
+`apiary-groups`         | domains                | `<ul>`
 `apiary-chairs`         | groups                 | `<ul>`
 `apiary-description`    | groups                 | text
 `apiary-family`         | users                  | text
