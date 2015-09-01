@@ -4,36 +4,37 @@
 (function() {
 
   // Pseudo-constants:
-  var VERSION             = '0.2.0';
-  var BASE_URL            = 'https://api-test.w3.org/';
-  var APIARY_PLACEHOLDER  = /[\^\ ]apiary-([^\ ]+)/g;
-  var TYPE_DOMAIN_PAGE    = 1;
-  var TYPE_GROUP_PAGE     = 2;
-  var TYPE_USER_PAGE      = 3;
-  var TYPE_GROUPS         = 4;
-  var TYPE_CHAIRS         = 5;
-  var TYPE_SPECIFICATIONS = 6;
+  var VERSION            = '0.3.0';
+  var BASE_URL           = 'https://api-test.w3.org/';
+  var APIARY_PLACEHOLDER = /[\^\ ]apiary-([^\ ]+)/g;
+  var APIARY_SELECTOR    = '[class^="apiary"]';
+  var TYPE_DOMAIN_PAGE   = 1;
+  var TYPE_GROUP_PAGE    = 2;
+  var TYPE_USER_PAGE     = 3;
+  var PHOTO_VALUE        = {
+    large:     2,
+    thumbnail: 1,
+    tiny:      0
+  };
 
   // “Global” variables:
   var apiKey;
   var type;
   var id;
   var placeholders = {};
-  var data         = {};
+  var cache        = {};
 
   /**
    * Main function.
    *
-   * I know everything you need to know, baby.
+   * @TODO: document.
    */
 
-  $(document).ready(function() {
-
+  var process = function() {
     inferTypeAndId();
-
     if (apiKey && type && id) {
       findPlaceholders();
-      getDataForType(type, id, injectValues);
+      getDataForType();
     } else {
       window.alert('Apiary ' + VERSION + '\n' +
         'ERROR: could not get all necessary metadata.\n' +
@@ -41,8 +42,7 @@
         'type: “' + type + '”\n' +
         'id: “' + id + '”');
     }
-
-  });
+  };
 
   /**
    * Infer the type of page (domain, group…) and the ID of the corresponding entity; resolve API key.
@@ -51,11 +51,9 @@
    */
 
   var inferTypeAndId = function() {
-
     if (1 === $('html[data-api-key]').length) {
       apiKey = $('html[data-api-key]').data('api-key');
     }
-
     if ($('[data-domain-id]').length > 0) {
       type = TYPE_DOMAIN_PAGE;
       id = $('[data-domain-id]').data('domain-id');
@@ -66,7 +64,6 @@
       type = TYPE_USER_PAGE;
       id = $('[data-user-id]').data('user-id');
     }
-
   };
 
   /**
@@ -86,7 +83,7 @@
    */
 
   var findPlaceholders = function() {
-    var candidates = $('[class^="apiary"]');
+    var candidates = $(APIARY_SELECTOR);
     var cand, match;
     for (var c = 0; c < candidates.length; c ++) {
       cand = $(candidates[c]);
@@ -104,148 +101,141 @@
   /**
    * Get basic data for a particular entity from the W3C API, given a type of item and its value.
    *
-   * @param {TYPE}     item     type of entity, eg TYPE_DOMAIN_PAGE
-   * @param {Object}   value    ID of the entity, eg “1234”
-   * @param {Function} callback eg injectValues
+   * @TODO: document.
    */
 
-  var getDataForType = function(item, value, callback) {
+  var getDataForType = function() {
     if (Object.keys(placeholders).length > 0) {
-      if (TYPE_DOMAIN_PAGE === item) {
-        get(BASE_URL + 'domains/' + value, function(json) {
-          data.name = json.name;
-          data.lead = json._links.lead.title;
-          if (placeholders.groups) {
-            digDownData(TYPE_GROUPS, json._links.groups.href, callback);
-          } else if (callback) {
-            callback.call();
-          }
-        });
-      } else if (TYPE_GROUP_PAGE === item) {
-        get(BASE_URL + 'groups/' + value, function(json) {
-          data.name = json.name;
-          data.type = json.type;
-          data.description = json.description;
-          if (placeholders.chairs) {
-            digDownData(TYPE_CHAIRS, json._links.chairs.href, callback);
-          } else if (callback) {
-            callback.call();
-          }
-        });
-      } else if (TYPE_USER_PAGE === item) {
-        get(BASE_URL + 'users/' + value, function(json) {
-          data.name = json.name;
-          data.family = json.family;
-          data.given = json.given;
-          data.photo = '<img alt="Photo of ' + data.name + '" src="' + getLargestPhotoUrl(json._links.photos) + '">';
-          if (placeholders.specifications) {
-            digDownData(TYPE_SPECIFICATIONS, json._links.specifications.href, callback);
-          } else if (callback) {
-            callback.call();
-          }
-        });
-      } else {
-        if (callback) {
-          callback.call();
-        }
-      }
-    } else {
-      if (callback) {
-        callback.call();
+      if (TYPE_DOMAIN_PAGE === type) {
+        get(BASE_URL + 'domains/' + id, crawl);
+      } else if (TYPE_GROUP_PAGE === type) {
+        get(BASE_URL + 'groups/' + id, crawl);
+      } else if (TYPE_USER_PAGE === type) {
+        get(BASE_URL + 'users/' + id, crawl);
       }
     }
   };
 
   /**
-   * Get data recursively, given a URL and the type of data.
-   *
-   * @param {TYPE}     item     eg TYPE_GROUPS
-   * @param {String}   url      eg “https://api-test.w3.org/domains/109/groups”
-   * @param {Function} callback eg injectValues
+   * @TODO: document.
    */
 
-  var digDownData = function(item, url, callback) {
-    var list, i;
-    get(url, function(json) {
-      if (TYPE_GROUPS === item) {
-        list = '<ul>';
-        for (i = 0; i < json._links.groups.length; i ++) {
-          list += '<li>' + json._links.groups[i].title + '</li>';
+  var crawl = function(json) {
+    var i, keys, key, prefix, rest;
+    keys = Object.keys(placeholders);
+    for (key in keys) {
+      i = keys[key];
+      if (json.hasOwnProperty(i)) {
+        if (1 === Object.keys(json[i]).length && json[i].hasOwnProperty('href')) {
+          get(json[i].href, crawl);
+        } else {
+          injectValues(i, json[i]);
         }
-        list += '</ul>';
-        data.groups = list;
-      } else if (TYPE_CHAIRS === item) {
-        list = '<ul>';
-        for (i = 0; i < json._links.chairs.length; i ++) {
-          list += '<li>' + json._links.chairs[i].title + '</li>';
-        }
-        list += '</ul>';
-        data.chairs = list;
-      } else if (TYPE_SPECIFICATIONS === item) {
-        list = '<ul>';
-        for (i = 0; i < json._links.specifications.length; i ++) {
-          list += '<li>' + json._links.specifications[i].title + '</li>';
-        }
-        list += '</ul>';
-        data.specifications = list;
+      } else if (i.indexOf('-') > -1) {
+        prefix = i.substr(0, i.indexOf('-'));
+        rest = i.substr(i.indexOf('-') + 1);
+        Object.defineProperty(placeholders, rest, Object.getOwnPropertyDescriptor(placeholders, i));
+        delete placeholders[i];
+        crawl(json[prefix]);
       }
-      if (callback) {
-        callback.call();
-      }
-    });
+    }
   };
 
   /**
    * Inject values retrieved from the API into the relevant elements of the DOM.
+   *
+   * @TODO: document.
    */
 
-  var injectValues = function() {
-    for (var i in placeholders) {
-      if (placeholders.hasOwnProperty(i)) {
-        for (var j in placeholders[i]) {
-          placeholders[i][j].html(data[i]);
+  var injectValues = function(key, value) {
+    var chunk;
+    if ('string' === typeof value || 'number' === typeof value) {
+      chunk = String(value);
+    } else if (value instanceof Array) {
+      chunk = getLargestPhoto(value);
+      if (!chunk) {
+        chunk = '<ul>';
+        for (var i = 0; i < value.length; i ++) {
+          if (value[i].hasOwnProperty('name')) {
+            chunk += '<li>' + value[i].name + '</li>';
+          } else if (value[i].hasOwnProperty('title')) {
+            chunk += '<li>' + value[i].title + '</li>';
+          }
+        }
+        chunk += '</ul>';
+      }
+    } else if ('object' === typeof value) {
+      if (value.hasOwnProperty('href')) {
+        if (value.hasOwnProperty('name')) {
+          chunk = '<a href="' + value.href + '">' + value.name + '</a>';
         }
       }
     }
+    for (var i in placeholders[key]) {
+      placeholders[key][i].html(chunk);
+      placeholders[key][i].addClass('apiary-done');
+    }
+    delete placeholders[key];
   };
 
   /**
-   * GET data from the API, using the API key.
+   * GET data from the API, using the API key, and return the flattened version.
    *
    * @param {String}   url      target URL, including base URL and parameters, but not an API key.
    * @param {Function} callback <code>function(json){}</code>
    */
 
   var get = function(url, callback) {
-
     var newUrl = url;
-
     if (-1 === newUrl.indexOf('?')) {
-      newUrl += '?apikey=' + apiKey;
-    } else if (-1 === newUrl.toLowerCase().indexOf('apikey=')) {
-      newUrl += '&apikey=' + apiKey;
+      newUrl += '?apikey=' + apiKey + '&embed=true';
+    } else {
+      newUrl += '&apikey=' + apiKey + '&embed=true';
     }
-
-    $.get(newUrl, callback);
-
+    if (cache.hasOwnProperty(newUrl)) {
+      callback(cache[newUrl]);
+    } else {
+      $.get(newUrl, function(result) {
+        var i, j;
+        for (i in {'_links': true, '_embedded': true}) {
+          if (result.hasOwnProperty(i)) {
+            for (j in result[i]) {
+              if (result[i].hasOwnProperty(j)) {
+                result[j] = result[i][j];
+              }
+            }
+            delete result[i];
+          }
+        }
+        cache[newUrl] = result;
+        callback(result);
+      });
+    }
   };
 
   /**
-   * Find the largest photo available from an array of them.
+   * Find the largest photo available from an array of them, and return an IMG element.
    *
-   * @param {Array} photos eg, [{name: 'large', href: 'size-L.jpg'}, {name: 'medium', href: 'size-M.jpg'}]
+   * @TODO: document.
    */
 
-  var getLargestPhotoUrl = function(photos) {
-    var VALUE = {large: 2, thumbnail: 1, tiny: 0};
-    var result;
-    for (var i = 0; i < photos.length; i ++) {
-      if (!result || VALUE[photos[i].name] > VALUE[result.name]) {
-        result = photos[i];
+  var getLargestPhoto = function(data) {
+    var largest, result;
+    if (data && data.length > 0) {
+      for (var i = 0; i < data.length; i ++) {
+        if (data[i].href && data[i].name && (!largest || PHOTO_VALUE[data[i].name] > PHOTO_VALUE[largest.name])) {
+          largest = data[i];
+        }
+      }
+      if (largest) {
+        result = '<img alt="Portrait" src="' + largest.href + '">';
       }
     }
-    return result.href;
+    return result;
   };
+
+  // Process stuff!
+  $(document).ready(process);
 
 })();
 
