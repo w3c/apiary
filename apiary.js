@@ -126,7 +126,7 @@
     for (key in keys) {
       i = keys[key];
       if (json.hasOwnProperty(i)) {
-        if (1 === Object.keys(json[i]).length && json[i].hasOwnProperty('href')) {
+        if ('object' === typeof json[i] && 1 === Object.keys(json[i]).length && json[i].hasOwnProperty('href')) {
           get(json[i].href, crawl);
         } else {
           injectValues(i, json[i]);
