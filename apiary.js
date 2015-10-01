@@ -6,6 +6,7 @@
   // Pseudo-constants:
   var VERSION            = '0.3.0';
   var BASE_URL           = 'https://api-test.w3.org/';
+  var USER_PROFILE_URL   = 'https://www.w3.org/users/';
   var APIARY_PLACEHOLDER = /[\^\ ]apiary-([^\ ]+)/g;
   var APIARY_SELECTOR    = '[class^="apiary"]';
   var TYPE_DOMAIN_PAGE   = 1;
@@ -156,7 +157,19 @@
       if (!chunk) {
         chunk = '<ul>';
         for (var i = 0; i < value.length; i ++) {
-          if (value[i].hasOwnProperty('name')) {
+	  // @TODO: get rid of these special checks when there's a smarter algorithm for hyperlinks.
+          if (value[i].hasOwnProperty('_links') && value[i]._links.hasOwnProperty('homepage') &&
+            value[i]._links.homepage.hasOwnProperty('href') && value[i].hasOwnProperty('name')) {
+            // It's a group.
+            chunk += '<li><a href="' + value[i]._links.homepage.href + '">' + value[i].name + '</a></li>';
+          } else if (value[i].hasOwnProperty('discr') && 'user' === value[i].discr &&
+            value[i].hasOwnProperty('id') && value[i].hasOwnProperty('name')) {
+            // It's a user.
+            chunk += '<li><a href="' + USER_PROFILE_URL + value[i].id + '">' + value[i].name + '</a></li>';
+          } else if (value[i].hasOwnProperty('shortlink') && value[i].hasOwnProperty('title')) {
+            // It's a spec.
+            chunk += '<li><a href="' + value[i].shortlink + '">' + value[i].title + '</a></li>';
+          } else if (value[i].hasOwnProperty('name')) {
             chunk += '<li>' + value[i].name + '</li>';
           } else if (value[i].hasOwnProperty('title')) {
             chunk += '<li>' + value[i].title + '</li>';
