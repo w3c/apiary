@@ -4,7 +4,7 @@
 (function() {
 
   // Pseudo-constants:
-  var VERSION            = '0.3.0';
+  var VERSION            = '0.4.0';
   var BASE_URL           = 'https://api-test.w3.org/';
   var USER_PROFILE_URL   = 'https://www.w3.org/users/';
   var APIARY_PLACEHOLDER = /[\^\ ]apiary-([^\ ]+)/g;
@@ -132,9 +132,9 @@
         } else {
           injectValues(i, json[i]);
         }
-      } else if (i.indexOf('-') > -1) {
-        prefix = i.substr(0, i.indexOf('-'));
-        rest = i.substr(i.indexOf('-') + 1);
+      } else if (i.indexOf('@') > -1) {
+        prefix = i.substr(0, i.indexOf('@'));
+        rest = i.substr(i.indexOf('@') + 1);
         Object.defineProperty(placeholders, rest, Object.getOwnPropertyDescriptor(placeholders, i));
         delete placeholders[i];
         crawl(json[prefix]);

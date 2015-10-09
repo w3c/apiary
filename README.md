@@ -68,23 +68,6 @@ For example:
 For consistency (and to adhere to the [POLA](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)),
 the suffix part of these placeholders is equal to [the object keys returned by the API](https://api-test.w3.org/doc).
 
-These are all the supported placeholders now:
-
-Placeholder             | Applies to             | Generated content
-:-----------------------|:-----------------------|:-----------------
-`apiary-groups`         | domains                | `<ul>`
-`apiary-chairs`         | groups                 | `<ul>`
-`apiary-description`    | groups                 | text
-`apiary-family`         | users                  | text
-`apiary-given`          | users                  | text
-`apiary-lead`           | domains                | text
-`apiary-name`           | domains, groups, users | text
-`apiary-photo` ¹        | users                  | `<img>`
-`apiary-specifications` | users                  | `<ul>`
-`apiary-type`           | groups                 | text
-
-¹ Largest image returned by the API, if there are several sizes.
-
 The additional class `apiary` in the example files is ignored by Apiary itself but you may wish to include it anyway to all placeholders in your documents for easier CSS styling.
 
 ## Credits
