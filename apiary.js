@@ -5,7 +5,7 @@
 
   // Pseudo-constants:
   var VERSION            = '0.4.0';
-  var BASE_URL           = 'https://api-test.w3.org/';
+  var BASE_URL           = 'https://api.w3.org/';
   var USER_PROFILE_URL   = 'https://www.w3.org/users/';
   var APIARY_PLACEHOLDER = /[\^\ ]apiary-([^\ ]+)/g;
   var APIARY_SELECTOR    = '[class^="apiary"]';
