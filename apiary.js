@@ -1,7 +1,12 @@
-
 'use strict';
 
-(function() {
+/**
+ * Simple JavaScript library to leverage the W3C API.
+ *
+ * @namespace Apiary
+ */
+
+(function(window) {
 
   // Pseudo-constants:
   var VERSION            = '0.4.0';
@@ -19,16 +24,57 @@
   };
 
   // “Global” variables:
-  var apiKey;
-  var type;
-  var id;
-  var placeholders = {};
-  var cache        = {};
 
   /**
-   * Main function.
+   * API key, provided by the user.
    *
-   * @TODO: document.
+   * @alias apiKey
+   * @memberOf Apiary
+   */
+
+  var apiKey;
+
+  /**
+   * Type of page; one of <code>TYPE_DOMAIN_PAGE</code>, <code>TYPE_GROUP_PAGE</code> or <code>TYPE_USER_PAGE</code>.
+   *
+   * @alias type
+   * @memberOf Apiary
+   */
+
+  var type;
+
+  /**
+   * ID of the entity being used on the page.
+   *
+   * @alias id
+   * @memberOf Apiary
+   */
+
+  var id;
+
+  /**
+   * Dictionary of placeholders found on the page, and all DOM elements associated to each one of them.
+   *
+   * @alias placeholders
+   * @memberOf Apiary
+   */
+
+  var placeholders = {};
+
+  /**
+   * Simple cache of HTTP calls to the API, to avoid redundancy and save on requests.
+   *
+   * @alias cache
+   * @memberOf Apiary
+   */
+
+  var cache = {};
+
+  /**
+   * Main function, invoked once after the document is completely loaded.
+   *
+   * @alias process
+   * @memberOf Apiary
    */
 
   var process = function() {
@@ -48,7 +94,10 @@
   /**
    * Infer the type of page (domain, group…) and the ID of the corresponding entity; resolve API key.
    *
-   * After this function is done, variables “apiKey”, “type” and “id” should have their right values set.
+   * After this function is done, variables <code>apiKey</code>, <code>type</code> and <code>id</code> should have their right values set.
+   *
+   * @alias inferTypeAndId
+   * @memberOf Apiary
    */
 
   var inferTypeAndId = function() {
@@ -68,11 +117,12 @@
   };
 
   /**
-   * Traverse the DOM in search of all elements with class “apiary-*”.
+   * Traverse the DOM in search of all elements with class <code>apiary-*</code>.
    *
-   * After this function is done, “placeholders” should be an object containing all keys found in the DOM;
+   * After this function is done, <code>placeholders</code> should be an object containing all keys found in the DOM;
    * and for every key, an array of all elements mentioning that key.
-   * For example:
+   *
+   * @example
    * {
    *   name: [
    *     <title> element,
@@ -81,6 +131,9 @@
    *   lead: [<div> element],
    *   groups: [<div> element]
    * }
+   *
+   * @alias findPlaceholders
+   * @memberOf Apiary
    */
 
   var findPlaceholders = function() {
@@ -102,7 +155,8 @@
   /**
    * Get basic data for a particular entity from the W3C API, given a type of item and its value.
    *
-   * @TODO: document.
+   * @alias getDataForType
+   * @memberOf Apiary
    */
 
   var getDataForType = function() {
@@ -118,7 +172,12 @@
   };
 
   /**
-   * @TODO: document.
+   * Crawl the API dynamically, traversing segments in placeholders.
+   *
+   * @param {Object} json JSON coming from an API call.
+   *
+   * @alias crawl
+   * @memberOf Apiary
    */
 
   var crawl = function(json) {
@@ -145,7 +204,11 @@
   /**
    * Inject values retrieved from the API into the relevant elements of the DOM.
    *
-   * @TODO: document.
+   * @param {String} key   ID of the placeholder.
+   * @param {Object} value actual value for that piece of data.
+   *
+   * @alias injectValues
+   * @memberOf Apiary
    */
 
   var injectValues = function(key, value) {
@@ -195,7 +258,10 @@
    * GET data from the API, using the API key, and return the flattened version.
    *
    * @param {String}   url      target URL, including base URL and parameters, but not an API key.
-   * @param {Function} callback <code>function(json){}</code>
+   * @param {Function} callback signature: <code>function(json){}</code>
+   *
+   * @alias get
+   * @memberOf Apiary
    */
 
   var get = function(url, callback) {
@@ -229,7 +295,10 @@
   /**
    * Find the largest photo available from an array of them, and return an IMG element.
    *
-   * @TODO: document.
+   * @param {Array} data list of photos provided.
+   *
+   * @alias getLargestPhoto
+   * @memberOf Apiary
    */
 
   var getLargestPhoto = function(data) {
@@ -250,5 +319,4 @@
   // Process stuff!
   $(document).ready(process);
 
-})();
-
+})(window);
