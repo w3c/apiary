@@ -71,6 +71,10 @@
    * @memberOf Apiary
    */
   var process = function() {
+    if (window.removeEventListener)
+      window.removeEventListener('load', process);
+    else if (window.detachEvent)
+      window.detachEvent('onload', process);
     inferTypeAndId();
     if (apiKey && type && id) {
       findPlaceholders();
@@ -308,6 +312,9 @@
   };
 
   // Process stuff!
-  window.onload = process;
+  if (window.addEventListener)
+    window.addEventListener('load', process);
+  else if (window.attachEvent)
+    window.attachEvent('onload', process);
 
 })(window);
