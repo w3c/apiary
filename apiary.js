@@ -255,7 +255,7 @@
   };
 
   /**
-   * GET data from the API, using the API key, and return the flattened version.
+   * GET data from the API, using the API key, and process the flattened version.
    *
    * @param {String}   url      target URL, including base URL and parameters, but not an API key.
    * @param {Function} callback signature: <code>function(json){}</code>
@@ -295,7 +295,8 @@
   /**
    * Find the largest photo available from an array of them, and return an IMG element.
    *
-   * @param {Array} data list of photos provided.
+   * @param   {Array}  data list of photos provided.
+   * @returns {String}      chunk of text corresponding to a new <code>&lt;img&gt;</code> node with the photo.
    *
    * @alias getLargestPhoto
    * @memberOf Apiary
