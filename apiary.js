@@ -5,7 +5,6 @@
  *
  * @namespace Apiary
  */
-
 (function(window) {
 
   // Pseudo-constants:
@@ -31,7 +30,6 @@
    * @alias apiKey
    * @memberOf Apiary
    */
-
   var apiKey;
 
   /**
@@ -40,7 +38,6 @@
    * @alias type
    * @memberOf Apiary
    */
-
   var type;
 
   /**
@@ -49,7 +46,6 @@
    * @alias id
    * @memberOf Apiary
    */
-
   var id;
 
   /**
@@ -58,7 +54,6 @@
    * @alias placeholders
    * @memberOf Apiary
    */
-
   var placeholders = {};
 
   /**
@@ -67,7 +62,6 @@
    * @alias cache
    * @memberOf Apiary
    */
-
   var cache = {};
 
   /**
@@ -76,7 +70,6 @@
    * @alias process
    * @memberOf Apiary
    */
-
   var process = function() {
     inferTypeAndId();
     if (apiKey && type && id) {
@@ -99,7 +92,6 @@
    * @alias inferTypeAndId
    * @memberOf Apiary
    */
-
   var inferTypeAndId = function() {
     if (1 === $('html[data-api-key]').length) {
       apiKey = $('html[data-api-key]').data('api-key');
@@ -135,7 +127,6 @@
    * @alias findPlaceholders
    * @memberOf Apiary
    */
-
   var findPlaceholders = function() {
     var candidates = $(APIARY_SELECTOR);
     var cand, match;
@@ -158,7 +149,6 @@
    * @alias getDataForType
    * @memberOf Apiary
    */
-
   var getDataForType = function() {
     if (Object.keys(placeholders).length > 0) {
       if (TYPE_DOMAIN_PAGE === type) {
@@ -179,7 +169,6 @@
    * @alias crawl
    * @memberOf Apiary
    */
-
   var crawl = function(json) {
     var i, keys, key, prefix, rest;
     keys = Object.keys(placeholders);
@@ -210,7 +199,6 @@
    * @alias injectValues
    * @memberOf Apiary
    */
-
   var injectValues = function(key, value) {
     var chunk;
     if ('string' === typeof value || 'number' === typeof value) {
@@ -263,7 +251,6 @@
    * @alias get
    * @memberOf Apiary
    */
-
   var get = function(url, callback) {
     var newUrl = url;
     if (-1 === newUrl.indexOf('?')) {
@@ -301,7 +288,6 @@
    * @alias getLargestPhoto
    * @memberOf Apiary
    */
-
   var getLargestPhoto = function(data) {
     var largest, result;
     if (data && data.length > 0) {
