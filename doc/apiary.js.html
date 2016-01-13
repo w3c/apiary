@@ -1,4 +1,32 @@
-'use strict';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: apiary.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: apiary.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
 
 /**
  * Simple JavaScript library to leverage the W3C API.
@@ -33,7 +61,7 @@
   var apiKey;
 
   /**
-   * Type of page; one of <code>TYPE_DOMAIN_PAGE</code>, <code>TYPE_GROUP_PAGE</code> or <code>TYPE_USER_PAGE</code>.
+   * Type of page; one of &lt;code>TYPE_DOMAIN_PAGE&lt;/code>, &lt;code>TYPE_GROUP_PAGE&lt;/code> or &lt;code>TYPE_USER_PAGE&lt;/code>.
    *
    * @alias type
    * @memberOf Apiary
@@ -72,7 +100,7 @@
    */
   var process = function() {
     inferTypeAndId();
-    if (apiKey && type && id) {
+    if (apiKey &amp;&amp; type &amp;&amp; id) {
       findPlaceholders();
       getDataForType();
     } else {
@@ -87,7 +115,7 @@
   /**
    * Infer the type of page (domain, group…) and the ID of the corresponding entity; resolve API key.
    *
-   * After this function is done, variables <code>apiKey</code>, <code>type</code> and <code>id</code> should have their right values set.
+   * After this function is done, variables &lt;code>apiKey&lt;/code>, &lt;code>type&lt;/code> and &lt;code>id&lt;/code> should have their right values set.
    *
    * @alias inferTypeAndId
    * @memberOf Apiary
@@ -109,19 +137,19 @@
   };
 
   /**
-   * Traverse the DOM in search of all elements with class <code>apiary-*</code>.
+   * Traverse the DOM in search of all elements with class &lt;code>apiary-*&lt;/code>.
    *
-   * After this function is done, <code>placeholders</code> should be an object containing all keys found in the DOM;
+   * After this function is done, &lt;code>placeholders&lt;/code> should be an object containing all keys found in the DOM;
    * and for every key, an array of all elements mentioning that key.
    *
    * @example
    * {
    *   name: [
-   *     <title> element,
-   *     <h1> element
+   *     &lt;title> element,
+   *     &lt;h1> element
    *   ],
-   *   lead: [<div> element],
-   *   groups: [<div> element]
+   *   lead: [&lt;div> element],
+   *   groups: [&lt;div> element]
    * }
    *
    * @alias findPlaceholders
@@ -130,7 +158,7 @@
   var findPlaceholders = function() {
     var candidates = $(APIARY_SELECTOR);
     var cand, match;
-    for (var c = 0; c < candidates.length; c ++) {
+    for (var c = 0; c &lt; candidates.length; c ++) {
       cand = $(candidates[c]);
       match = APIARY_PLACEHOLDER.exec(cand.attr('class'));
       while (match) {
@@ -175,7 +203,7 @@
     for (key in keys) {
       i = keys[key];
       if (json.hasOwnProperty(i)) {
-        if ('object' === typeof json[i] && 1 === Object.keys(json[i]).length && json[i].hasOwnProperty('href')) {
+        if ('object' === typeof json[i] &amp;&amp; 1 === Object.keys(json[i]).length &amp;&amp; json[i].hasOwnProperty('href')) {
           get(json[i].href, crawl);
         } else {
           injectValues(i, json[i]);
@@ -206,32 +234,32 @@
     } else if (value instanceof Array) {
       chunk = getLargestPhoto(value);
       if (!chunk) {
-        chunk = '<ul>';
-        for (var i = 0; i < value.length; i ++) {
+        chunk = '&lt;ul>';
+        for (var i = 0; i &lt; value.length; i ++) {
 	  // @TODO: get rid of these special checks when there's a smarter algorithm for hyperlinks.
-          if (value[i].hasOwnProperty('_links') && value[i]._links.hasOwnProperty('homepage') &&
-            value[i]._links.homepage.hasOwnProperty('href') && value[i].hasOwnProperty('name')) {
+          if (value[i].hasOwnProperty('_links') &amp;&amp; value[i]._links.hasOwnProperty('homepage') &amp;&amp;
+            value[i]._links.homepage.hasOwnProperty('href') &amp;&amp; value[i].hasOwnProperty('name')) {
             // It's a group.
-            chunk += '<li><a href="' + value[i]._links.homepage.href + '">' + value[i].name + '</a></li>';
-          } else if (value[i].hasOwnProperty('discr') && 'user' === value[i].discr &&
-            value[i].hasOwnProperty('id') && value[i].hasOwnProperty('name')) {
+            chunk += '&lt;li>&lt;a href="' + value[i]._links.homepage.href + '">' + value[i].name + '&lt;/a>&lt;/li>';
+          } else if (value[i].hasOwnProperty('discr') &amp;&amp; 'user' === value[i].discr &amp;&amp;
+            value[i].hasOwnProperty('id') &amp;&amp; value[i].hasOwnProperty('name')) {
             // It's a user.
-            chunk += '<li><a href="' + USER_PROFILE_URL + value[i].id + '">' + value[i].name + '</a></li>';
-          } else if (value[i].hasOwnProperty('shortlink') && value[i].hasOwnProperty('title')) {
+            chunk += '&lt;li>&lt;a href="' + USER_PROFILE_URL + value[i].id + '">' + value[i].name + '&lt;/a>&lt;/li>';
+          } else if (value[i].hasOwnProperty('shortlink') &amp;&amp; value[i].hasOwnProperty('title')) {
             // It's a spec.
-            chunk += '<li><a href="' + value[i].shortlink + '">' + value[i].title + '</a></li>';
+            chunk += '&lt;li>&lt;a href="' + value[i].shortlink + '">' + value[i].title + '&lt;/a>&lt;/li>';
           } else if (value[i].hasOwnProperty('name')) {
-            chunk += '<li>' + value[i].name + '</li>';
+            chunk += '&lt;li>' + value[i].name + '&lt;/li>';
           } else if (value[i].hasOwnProperty('title')) {
-            chunk += '<li>' + value[i].title + '</li>';
+            chunk += '&lt;li>' + value[i].title + '&lt;/li>';
           }
         }
-        chunk += '</ul>';
+        chunk += '&lt;/ul>';
       }
     } else if ('object' === typeof value) {
       if (value.hasOwnProperty('href')) {
         if (value.hasOwnProperty('name')) {
-          chunk = '<a href="' + value.href + '">' + value.name + '</a>';
+          chunk = '&lt;a href="' + value.href + '">' + value.name + '&lt;/a>';
         }
       }
     }
@@ -246,7 +274,7 @@
    * GET data from the API, using the API key, and process the flattened version.
    *
    * @param {String}   url      target URL, including base URL and parameters, but not an API key.
-   * @param {Function} callback signature: <code>function(json){}</code>
+   * @param {Function} callback signature: &lt;code>function(json){}&lt;/code>
    *
    * @alias get
    * @memberOf Apiary
@@ -254,9 +282,9 @@
   var get = function(url, callback) {
     var newUrl = url;
     if (-1 === newUrl.indexOf('?')) {
-      newUrl += '?apikey=' + apiKey + '&embed=true';
+      newUrl += '?apikey=' + apiKey + '&amp;embed=true';
     } else {
-      newUrl += '&apikey=' + apiKey + '&embed=true';
+      newUrl += '&amp;apikey=' + apiKey + '&amp;embed=true';
     }
     if (cache.hasOwnProperty(newUrl)) {
       callback(cache[newUrl]);
@@ -283,21 +311,21 @@
    * Find the largest photo available from an array of them, and return an IMG element.
    *
    * @param   {Array}  data list of photos provided.
-   * @returns {String}      chunk of text corresponding to a new <code>&lt;img&gt;</code> node with the photo.
+   * @returns {String}      chunk of text corresponding to a new &lt;code>&amp;lt;img&amp;gt;&lt;/code> node with the photo.
    *
    * @alias getLargestPhoto
    * @memberOf Apiary
    */
   var getLargestPhoto = function(data) {
     var largest, result;
-    if (data && data.length > 0) {
-      for (var i = 0; i < data.length; i ++) {
-        if (data[i].href && data[i].name && (!largest || PHOTO_VALUE[data[i].name] > PHOTO_VALUE[largest.name])) {
+    if (data &amp;&amp; data.length > 0) {
+      for (var i = 0; i &lt; data.length; i ++) {
+        if (data[i].href &amp;&amp; data[i].name &amp;&amp; (!largest || PHOTO_VALUE[data[i].name] > PHOTO_VALUE[largest.name])) {
           largest = data[i];
         }
       }
       if (largest) {
-        result = '<img alt="Portrait" src="' + largest.href + '">';
+        result = '&lt;img alt="Portrait" src="' + largest.href + '">';
       }
     }
     return result;
@@ -307,3 +335,26 @@
   $(document).ready(process);
 
 })(window);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Apiary.html">Apiary</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Jan 13 2016 14:41:26 GMT+0900 (JST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

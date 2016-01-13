@@ -1,4 +1,3 @@
-
 # Apiary
 
 ![Logo](https://w3c.github.io/apiary/logo.svg)
@@ -70,9 +69,19 @@ the suffix part of these placeholders is equal to [the object keys returned by t
 
 The additional class `apiary` in the example files is ignored by Apiary itself but you may wish to include it anyway to all placeholders in your documents for easier CSS styling.
 
+## Hacking Apiary
+
+Find the developer documentation [under `doc/`](https://w3c.github.io/apiary/doc/Apiary.html).
+
+To regenerate the documentation:
+
+```bash
+$ sudo npm install -g jsdoc
+$ jsdoc ./apiary.js --destination ./doc/ --access all --encoding utf8 --verbose
+```
+
 ## Credits
 
 Copyright © 2015 [World Wide Web Consortium](http://www.w3.org/)
 
 This project is licensed [under the terms of the MIT license](LICENSE.md).
-
