@@ -8,10 +8,10 @@
 (function(window) {
 
   // Pseudo-constants:
-  var VERSION            = '0.4.0';
+  var VERSION            = '0.5.0';
   var BASE_URL           = 'https://api.w3.org/';
   var USER_PROFILE_URL   = 'https://www.w3.org/users/';
-  var APIARY_PLACEHOLDER = /[\^\ ]apiary-([^\ ]+)/g;
+  var APIARY_PLACEHOLDER = /^apiary\-([\w\-@]+)$/g;
   var APIARY_SELECTOR    = '[class^="apiary"]';
   var TYPE_DOMAIN_PAGE   = 1;
   var TYPE_GROUP_PAGE    = 2;
@@ -71,6 +71,10 @@
    * @memberOf Apiary
    */
   var process = function() {
+    if (window.removeEventListener)
+      window.removeEventListener('load', process);
+    else if (window.detachEvent)
+      window.detachEvent('onload', process);
     inferTypeAndId();
     if (apiKey && type && id) {
       findPlaceholders();
@@ -93,18 +97,18 @@
    * @memberOf Apiary
    */
   var inferTypeAndId = function() {
-    if (1 === $('html[data-api-key]').length) {
-      apiKey = $('html[data-api-key]').data('api-key');
+    if (1 === document.querySelectorAll('html[data-api-key]').length) {
+      apiKey = document.querySelectorAll('html[data-api-key]')[0].getAttribute('data-api-key');
     }
-    if ($('[data-domain-id]').length > 0) {
+    if (document.querySelectorAll('[data-domain-id]').length > 0) {
       type = TYPE_DOMAIN_PAGE;
-      id = $('[data-domain-id]').data('domain-id');
-    } else if ($('[data-group-id]').length > 0) {
+      id = document.querySelectorAll('[data-domain-id]')[0].getAttribute('data-domain-id');
+    } else if (document.querySelectorAll('[data-group-id]').length > 0) {
       type = TYPE_GROUP_PAGE;
-      id = $('[data-group-id]').data('group-id');
-    } else if ($('[data-user-id]').length > 0) {
+      id = document.querySelectorAll('[data-group-id]')[0].getAttribute('data-group-id');
+    } else if (document.querySelectorAll('[data-user-id]').length > 0) {
       type = TYPE_USER_PAGE;
-      id = $('[data-user-id]').data('user-id');
+      id = document.querySelectorAll('[data-user-id]')[0].getAttribute('data-user-id');
     }
   };
 
@@ -128,17 +132,18 @@
    * @memberOf Apiary
    */
   var findPlaceholders = function() {
-    var candidates = $(APIARY_SELECTOR);
-    var cand, match;
+    var candidates = document.querySelectorAll(APIARY_SELECTOR);
+    var classes, match;
     for (var c = 0; c < candidates.length; c ++) {
-      cand = $(candidates[c]);
-      match = APIARY_PLACEHOLDER.exec(cand.attr('class'));
-      while (match) {
-        if (!placeholders[match[1]]) {
-          placeholders[match[1]] = [];
+      classes = candidates[c].classList;
+      for (var i = 0; i < classes.length; i ++) {
+        match = APIARY_PLACEHOLDER.exec(classes[i]);
+        if (match) {
+          if (!placeholders[match[1]]) {
+            placeholders[match[1]] = [];
+          }
+          placeholders[match[1]].push(candidates[c]);
         }
-        placeholders[match[1]].push(cand);
-        match = APIARY_PLACEHOLDER.exec(cand.attr('class'));
       }
     }
   };
@@ -152,11 +157,11 @@
   var getDataForType = function() {
     if (Object.keys(placeholders).length > 0) {
       if (TYPE_DOMAIN_PAGE === type) {
-        get(BASE_URL + 'domains/' + id, crawl);
+        get(BASE_URL + 'domains/' + id);
       } else if (TYPE_GROUP_PAGE === type) {
-        get(BASE_URL + 'groups/' + id, crawl);
+        get(BASE_URL + 'groups/' + id);
       } else if (TYPE_USER_PAGE === type) {
-        get(BASE_URL + 'users/' + id, crawl);
+        get(BASE_URL + 'users/' + id);
       }
     }
   };
@@ -176,7 +181,7 @@
       i = keys[key];
       if (json.hasOwnProperty(i)) {
         if ('object' === typeof json[i] && 1 === Object.keys(json[i]).length && json[i].hasOwnProperty('href')) {
-          get(json[i].href, crawl);
+          get(json[i].href);
         } else {
           injectValues(i, json[i]);
         }
@@ -236,8 +241,8 @@
       }
     }
     for (var i in placeholders[key]) {
-      placeholders[key][i].html(chunk);
-      placeholders[key][i].addClass('apiary-done');
+      placeholders[key][i].innerHTML = chunk;
+      placeholders[key][i].classList.add('apiary-done');
     }
     delete placeholders[key];
   };
@@ -245,13 +250,12 @@
   /**
    * GET data from the API, using the API key, and process the flattened version.
    *
-   * @param {String}   url      target URL, including base URL and parameters, but not an API key.
-   * @param {Function} callback signature: <code>function(json){}</code>
+   * @param {String} url target URL, including base URL and parameters, but not an API key.
    *
    * @alias get
    * @memberOf Apiary
    */
-  var get = function(url, callback) {
+  var get = function(url) {
     var newUrl = url;
     if (-1 === newUrl.indexOf('?')) {
       newUrl += '?apikey=' + apiKey + '&embed=true';
@@ -259,9 +263,12 @@
       newUrl += '&apikey=' + apiKey + '&embed=true';
     }
     if (cache.hasOwnProperty(newUrl)) {
-      callback(cache[newUrl]);
+      crawl(cache[newUrl]);
     } else {
-      $.get(newUrl, function(result) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', newUrl);
+      xhr.addEventListener('loadend', function(event) {
+        var result = JSON.parse(xhr.response);
         var i, j;
         for (i in {'_links': true, '_embedded': true}) {
           if (result.hasOwnProperty(i)) {
@@ -274,8 +281,9 @@
           }
         }
         cache[newUrl] = result;
-        callback(result);
+        crawl(result);
       });
+      xhr.send();
     }
   };
 
@@ -304,6 +312,9 @@
   };
 
   // Process stuff!
-  $(document).ready(process);
+  if (window.addEventListener)
+    window.addEventListener('load', process);
+  else if (window.attachEvent)
+    window.attachEvent('onload', process);
 
 })(window);
