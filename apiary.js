@@ -11,7 +11,7 @@
   var VERSION            = '0.5.0';
   var BASE_URL           = 'https://api.w3.org/';
   var USER_PROFILE_URL   = 'https://www.w3.org/users/';
-  var APIARY_PLACEHOLDER = /^apiary\-(.+)$/g;
+  var APIARY_PLACEHOLDER = /^apiary\-([\w\-@]+)$/g;
   var APIARY_SELECTOR    = '[class^="apiary"]';
   var TYPE_DOMAIN_PAGE   = 1;
   var TYPE_GROUP_PAGE    = 2;
