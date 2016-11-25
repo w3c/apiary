@@ -8,14 +8,13 @@
 (function(window) {
 
   // Pseudo-constants:
-  var VERSION            = '0.5.0';
+  var VERSION            = '1.0.0';
   var BASE_URL           = 'https://api.w3.org/';
   var USER_PROFILE_URL   = 'https://www.w3.org/users/';
   var APIARY_PLACEHOLDER = /^apiary\-([\w\-@]+)$/g;
   var APIARY_SELECTOR    = '[class^="apiary"]';
-  var TYPE_DOMAIN_PAGE   = 1;
-  var TYPE_GROUP_PAGE    = 2;
-  var TYPE_USER_PAGE     = 3;
+  var TYPE_GROUP_PAGE    = 1;
+  var TYPE_USER_PAGE     = 2;
   var PHOTO_VALUE        = {
     large:     2,
     thumbnail: 1,
@@ -33,7 +32,7 @@
   var apiKey;
 
   /**
-   * Type of page; one of <code>TYPE_DOMAIN_PAGE</code>, <code>TYPE_GROUP_PAGE</code> or <code>TYPE_USER_PAGE</code>.
+   * Type of page; one of <code>TYPE_GROUP_PAGE</code> or <code>TYPE_USER_PAGE</code>.
    *
    * @alias type
    * @memberOf Apiary
@@ -89,7 +88,7 @@
   };
 
   /**
-   * Infer the type of page (domain, group…) and the ID of the corresponding entity; resolve API key.
+   * Infer the type of page (group, user…) and the ID of the corresponding entity; resolve API key.
    *
    * After this function is done, variables <code>apiKey</code>, <code>type</code> and <code>id</code> should have their right values set.
    *
@@ -100,10 +99,7 @@
     if (1 === document.querySelectorAll('html[data-api-key]').length) {
       apiKey = document.querySelectorAll('html[data-api-key]')[0].getAttribute('data-api-key');
     }
-    if (document.querySelectorAll('[data-domain-id]').length > 0) {
-      type = TYPE_DOMAIN_PAGE;
-      id = document.querySelectorAll('[data-domain-id]')[0].getAttribute('data-domain-id');
-    } else if (document.querySelectorAll('[data-group-id]').length > 0) {
+    if (document.querySelectorAll('[data-group-id]').length > 0) {
       type = TYPE_GROUP_PAGE;
       id = document.querySelectorAll('[data-group-id]')[0].getAttribute('data-group-id');
     } else if (document.querySelectorAll('[data-user-id]').length > 0) {
@@ -156,9 +152,7 @@
    */
   var getDataForType = function() {
     if (Object.keys(placeholders).length > 0) {
-      if (TYPE_DOMAIN_PAGE === type) {
-        get(BASE_URL + 'domains/' + id);
-      } else if (TYPE_GROUP_PAGE === type) {
+      if (TYPE_GROUP_PAGE === type) {
         get(BASE_URL + 'groups/' + id);
       } else if (TYPE_USER_PAGE === type) {
         get(BASE_URL + 'users/' + id);
