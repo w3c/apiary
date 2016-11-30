@@ -3,7 +3,7 @@
 ![Logo](https://w3c.github.io/apiary/logo.svg)
 
 Apiary is a simple JavaScript library to leverage the W3C API.
-This library is intended to be used from W3C pages: domain pages, group pages, personal pages, etc.
+This library is intended to be used from W3C pages: group pages, personal pages, etc.
 With Apiary, you can inject data that is retrieved using the W3C API, in a declarative way using *placeholders*.
 Examples are also provided.
 
@@ -12,7 +12,6 @@ Refer to [the W3C API](https://github.com/w3c/w3c-api) and its documentation for
 
 ## Live examples
 
-* [Domain page](https://w3c.github.io/apiary/examples/domain.html)
 * [Group page](https://w3c.github.io/apiary/examples/group.html)
 * [User page](https://w3c.github.io/apiary/examples/user.html)
 
@@ -38,20 +37,19 @@ The examples provided here work with a public API key that is registered to test
 
 Specify the ID of the *entity* you want, adding a *data-&#42;* attribute to a container element, eg:  
 ```html
-<main data-domain-id="41381">
+<main data-group-id="68239">
 ```
 
 ### Add placeholders
 
 Finally, add *placeholders* wherever you want real data about that *entity*, eg:  
 ```html
-The lead of this domain is: <span class="apiary-lead"></span>.
+The chairs of this group are: <span class="apiary-chairs"></span>.
 ```
 
 ## Reference
 
 The container element should have *one* of these *data-&#42;* attributes, and its value should be a valid ID:
-* `data-domain-id`
 * `data-group-id`
 * `data-user-id` (use [the **user hash**](https://api.w3.org/doc#get--users-%7Bhash%7D))
 
