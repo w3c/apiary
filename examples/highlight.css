@@ -13,11 +13,14 @@ body > div > * {
   padding:          0.25em 8rem;
 }
 
-.apiary {
+code {
+  font-family: monospace;
+}
+
+[data-apiary] {
   background-color: #ffe0e0;
 }
 
 .apiary-done {
   background-color: #e0ffe0;
 }
-

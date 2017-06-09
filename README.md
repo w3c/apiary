@@ -26,39 +26,39 @@ Include [Apiary](apiary.js) in your page:
 
 ### Add your API key
 
-Specify your W3C API key, adding a *data-api-key* attribute to the HTML element, eg:  
+Specify your W3C API key, adding a `data-apiary-key` attribute to the HTML element, eg:  
 ```html
-<html data-api-key="abc123def456">
+<html data-apiary-key="abc123def456">
 ```
 (You can get an API key very easily; refer to [the documentation](https://w3c.github.io/w3c-api/#apikeys).
 The examples provided here work with a public API key that is registered to test Apiary only; don't try to use it elsewhere.)
 
 ### Specify an entity ID
 
-Specify the ID of the *entity* you want, adding a *data-&#42;* attribute to a container element, eg:  
+Specify the ID of the *entity* you want, adding a `data-apiary-&#42;` attribute to a container element, eg:  
 ```html
-<main data-group-id="68239">
+<main data-apiary-group="68239">
 ```
 
 ### Add placeholders
 
 Finally, add *placeholders* wherever you want real data about that *entity*, eg:  
 ```html
-The chairs of this group are: <span class="apiary-chairs"></span>.
+The chairs of this group are: <span data-apiary="chairs"></span>.
 ```
 
 ## Reference
 
-The container element should have *one* of these *data-&#42;* attributes, and its value should be a valid ID:
-* `data-group-id`
-* `data-user-id` (use [the **user hash**](https://api.w3.org/doc#get--users-%7Bhash%7D))
+The container element should have *one* of these *data-apiary-&#42;* attributes, and its value should be a valid ID:
+* `data-apiary-group`
+* `data-apiary-user` (use [the **user hash**](https://api.w3.org/doc#get--users-%7Bhash%7D))
 
-A placeholder is any element with a class beginning with `apiary-`.
+A placeholder is any element with a `data-apiary` attribute.
 Bear in mind that a new chunk of DOM will be inserted there; whatever that placeholder contains will be lost.
 We recommend that you have something in there giving users a hint that data is being loaded dynamically.
 For example:
 ```html
-<div class="apiary-chairs">[Loading…]</div>
+<div data-apiary="chairs">[Loading…]</div>
 ```
 
 For consistency (and to adhere to the [POLA](https://en.wikipedia.org/wiki/Principle_of_least_astonishment)),
@@ -79,6 +79,6 @@ $ jsdoc ./apiary.js --destination ./doc/ --access all --encoding utf8 --verbose
 
 ## Credits
 
-Copyright © 2015 [World Wide Web Consortium](http://www.w3.org/)
+Copyright © 2015&ndash;2016 [World Wide Web Consortium](http://www.w3.org/)
 
 This project is licensed [under the terms of the MIT license](LICENSE.md).

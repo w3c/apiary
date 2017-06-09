@@ -1,7 +1,6 @@
-
 # The MIT License (MIT)
 
-Copyright © 2015 [World Wide Web Consortium](http://www.w3.org/)
+Copyright © 2015&ndash;2016 [World Wide Web Consortium](http://www.w3.org/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “software”), to deal in
 the software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
@@ -13,4 +12,3 @@ The above copyright notice and this permission notice shall be included in all c
 for a particular purpose and noninfringement.
 In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise,
 arising from, out of or in connection with the software or the use or other dealings in the software.**
-

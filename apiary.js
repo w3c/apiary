@@ -8,13 +8,15 @@
 (function(window) {
 
   // Pseudo-constants:
-  var VERSION            = '1.0.0';
+  var VERSION            = '2.0.0';
   var BASE_URL           = 'https://api.w3.org/';
   var USER_PROFILE_URL   = 'https://www.w3.org/users/';
-  var APIARY_PLACEHOLDER = /^apiary\-([\w\-@]+)$/g;
-  var APIARY_SELECTOR    = '[class^="apiary"]';
+  var APIARY_ATTRIBUTE   = 'data-apiary';
+  var APIARY_SELECTOR    = `[${APIARY_ATTRIBUTE}]`;
   var TYPE_GROUP_PAGE    = 1;
   var TYPE_USER_PAGE     = 2;
+  var MODE_DEBUG         = 'debug';
+  var MODE_PRODUCTION    = 'production';
   var PHOTO_VALUE        = {
     large:     2,
     thumbnail: 1,
@@ -46,6 +48,14 @@
    * @memberOf Apiary
    */
   var id;
+
+  /**
+   * “Mode” (either “debug” or “production”; the latter by default).
+   *
+   * @alias mode
+   * @memberOf Apiary
+   */
+  var mode = 'production';
 
   /**
    * Dictionary of placeholders found on the page, and all DOM elements associated to each one of them.
@@ -96,15 +106,18 @@
    * @memberOf Apiary
    */
   var inferTypeAndId = function() {
-    if (1 === document.querySelectorAll('html[data-api-key]').length) {
-      apiKey = document.querySelectorAll('html[data-api-key]')[0].getAttribute('data-api-key');
+    if (1 === document.querySelectorAll('html[data-apiary-key]').length) {
+      apiKey = document.querySelectorAll('html[data-apiary-key]')[0].getAttribute('data-apiary-key');
     }
-    if (document.querySelectorAll('[data-group-id]').length > 0) {
+    if (document.querySelectorAll('[data-apiary-group]').length > 0) {
       type = TYPE_GROUP_PAGE;
-      id = document.querySelectorAll('[data-group-id]')[0].getAttribute('data-group-id');
-    } else if (document.querySelectorAll('[data-user-id]').length > 0) {
+      id = document.querySelectorAll('[data-apiary-group]')[0].getAttribute('data-apiary-group');
+    } else if (document.querySelectorAll('[data-apiary-user]').length > 0) {
       type = TYPE_USER_PAGE;
-      id = document.querySelectorAll('[data-user-id]')[0].getAttribute('data-user-id');
+      id = document.querySelectorAll('[data-apiary-user]')[0].getAttribute('data-apiary-user');
+    }
+    if (1 === document.querySelectorAll('html[data-apiary-mode]').length) {
+      mode = document.querySelectorAll('html[data-apiary-mode]')[0].getAttribute('data-apiary-mode');
     }
   };
 
@@ -129,19 +142,15 @@
    */
   var findPlaceholders = function() {
     var candidates = document.querySelectorAll(APIARY_SELECTOR);
-    var classes, match;
+    var expression;
     for (var c = 0; c < candidates.length; c ++) {
-      classes = candidates[c].classList;
-      for (var i = 0; i < classes.length; i ++) {
-        match = APIARY_PLACEHOLDER.exec(classes[i]);
-        if (match) {
-          if (!placeholders[match[1]]) {
-            placeholders[match[1]] = [];
-          }
-          placeholders[match[1]].push(candidates[c]);
-        }
-      }
+      expression = candidates[c].getAttribute(APIARY_ATTRIBUTE);
+      if (!placeholders[expression])
+        placeholders[expression] = [];
+      placeholders[expression].push(candidates[c]);
     }
+    if (MODE_DEBUG === mode)
+      console.log(`placeholders:\n${JSON.stringify(placeholders)}`);
   };
 
   /**
@@ -179,26 +188,85 @@
         } else {
           injectValues(i, json[i]);
         }
-      } else if (i.indexOf('@') > -1) {
-        prefix = i.substr(0, i.indexOf('@'));
-        rest = i.substr(i.indexOf('@') + 1);
-        Object.defineProperty(placeholders, rest, Object.getOwnPropertyDescriptor(placeholders, i));
-        delete placeholders[i];
-        crawl(json[prefix]);
+      } else if (i.indexOf(' ') > -1) {
+        prefix = i.substr(0, i.indexOf(' '));
+        rest = i.substr(i.indexOf(' ') + 1);
+        if (MODE_DEBUG === mode)
+          console.log(i, prefix, rest);
+        if (json.hasOwnProperty(prefix)) {
+          if ('object' === typeof json[prefix] && 1 === Object.keys(json[prefix]).length && json[prefix].hasOwnProperty('href'))
+            get(json[prefix].href);
+          else
+            injectValues(i, json[prefix], rest);
+        }
       }
     }
+  };
+
+  var interpolateString = function(expression) {
+    const expregex = /\$\{([^\}]+)\}/g;
+    var exp, result = expression;
+    while (exp = expregex.exec(expression))
+      if (this.hasOwnProperty(exp[1]))
+        result = result.replace(exp[0], this[exp[1]]);
+    return result;
+  };
+
+  var escapeHTML = function(string) {
+    const tags = /<[^>]*>/g,
+      ampersands = /&/g,
+      dquotes = /'/g,
+      squotes = /"/g;
+    return string.replace(tags, '').replace(ampersands, '&amp;').replace(dquotes, '&quot;').replace(squotes, '&#39;');
+  };
+
+  var formatEntity = function(entity, expression) {
+    console.log('format: ' + entity.type + ', ' + expression)
+    var result;
+    // @TODO: get rid of these special checks when there's a smarter algorithm for hyperlinks.
+    if (expression) {
+      result = '<li>' + interpolateString.call(entity, expression) + '</li>';
+    } else if (entity.hasOwnProperty('_links') && entity._links.hasOwnProperty('homepage') &&
+      entity._links.homepage.hasOwnProperty('href') && entity.hasOwnProperty('name')) {
+      // It's a group.
+      result = '<li><a href="' + entity._links.homepage.href + '">' + entity.name + '</a></li>';
+    } else if (entity.hasOwnProperty('discr') && 'user' === entity.discr &&
+      entity.hasOwnProperty('id') && entity.hasOwnProperty('name')) {
+      // It's a user.
+      result = '<li><a href="' + USER_PROFILE_URL + entity.id + '">' + (entity['work-title'] ? entity['work-title'] + ' ' : '') + entity.name + '</a></li>';
+    } else if (entity.hasOwnProperty('shortlink') && entity.hasOwnProperty('title')) {
+      // Spec:
+      result = '<li><a href="' + entity.shortlink;
+      result += (entity.description ? '" title="' + escapeHTML(entity.description) : '');
+      result += '">' + entity.title;
+      result += (entity.shortname ? ' (<code>' + entity.shortname + '</code>)' : '');
+      result += '</a></li>';
+    } else if (entity.hasOwnProperty('name')) {
+      result = '<li>' + entity.name + '</li>';
+    } else if (entity.hasOwnProperty('title')) {
+      result = '<li>' + entity.title + '</li>';
+    } else if (entity.hasOwnProperty('href') && entity.hasOwnProperty('title')) {
+      result = '<li><a href="' + entity.href + '">' + entity.title + '</a></li>';
+    } else if (entity.hasOwnProperty('href') && entity.hasOwnProperty('name')) {
+      result = '<a href="' + entity.href + '">' + entity.name + '</a>';
+    }
+    console.log(result);
+    return result;
   };
 
   /**
    * Inject values retrieved from the API into the relevant elements of the DOM.
    *
-   * @param {String} key   ID of the placeholder.
-   * @param {Object} value actual value for that piece of data.
+   * @param {String} key        ID of the placeholder.
+   * @param {Object} value      actual value for that piece of data.
+   * @param {Array}  expression list of fields to use (optional).
    *
    * @alias injectValues
    * @memberOf Apiary
    */
-  var injectValues = function(key, value) {
+  var injectValues = function(key, value, expression) {
+    if (MODE_DEBUG === mode)
+      console.log(`injectValues:\n${JSON.stringify(key)}\n${JSON.stringify(value)}\n${JSON.stringify(expression)}`);
     var chunk;
     if ('string' === typeof value || 'number' === typeof value) {
       chunk = String(value);
@@ -206,33 +274,12 @@
       chunk = getLargestPhoto(value);
       if (!chunk) {
         chunk = '<ul>';
-        for (var i = 0; i < value.length; i ++) {
-	  // @TODO: get rid of these special checks when there's a smarter algorithm for hyperlinks.
-          if (value[i].hasOwnProperty('_links') && value[i]._links.hasOwnProperty('homepage') &&
-            value[i]._links.homepage.hasOwnProperty('href') && value[i].hasOwnProperty('name')) {
-            // It's a group.
-            chunk += '<li><a href="' + value[i]._links.homepage.href + '">' + value[i].name + '</a></li>';
-          } else if (value[i].hasOwnProperty('discr') && 'user' === value[i].discr &&
-            value[i].hasOwnProperty('id') && value[i].hasOwnProperty('name')) {
-            // It's a user.
-            chunk += '<li><a href="' + USER_PROFILE_URL + value[i].id + '">' + value[i].name + '</a></li>';
-          } else if (value[i].hasOwnProperty('shortlink') && value[i].hasOwnProperty('title')) {
-            // It's a spec.
-            chunk += '<li><a href="' + value[i].shortlink + '">' + value[i].title + '</a></li>';
-          } else if (value[i].hasOwnProperty('name')) {
-            chunk += '<li>' + value[i].name + '</li>';
-          } else if (value[i].hasOwnProperty('title')) {
-            chunk += '<li>' + value[i].title + '</li>';
-          }
-        }
+        for (var i = 0; i < value.length; i ++)
+          chunk += formatEntity(value[i], expression);
         chunk += '</ul>';
       }
     } else if ('object' === typeof value) {
-      if (value.hasOwnProperty('href')) {
-        if (value.hasOwnProperty('name')) {
-          chunk = '<a href="' + value.href + '">' + value.name + '</a>';
-        }
-      }
+      chunk = formatEntity(value, expression);
     }
     for (var i in placeholders[key]) {
       placeholders[key][i].innerHTML = chunk;
@@ -250,6 +297,8 @@
    * @memberOf Apiary
    */
   var get = function(url) {
+    if (MODE_DEBUG === mode)
+      console.log('get:\n' + JSON.stringify(url));
     var newUrl = url;
     if (-1 === newUrl.indexOf('?')) {
       newUrl += '?apikey=' + apiKey + '&embed=true';
@@ -264,7 +313,7 @@
       xhr.addEventListener('loadend', function(event) {
         var result = JSON.parse(xhr.response);
         var i, j;
-        for (i in {'_links': true, '_embedded': true}) {
+        for (i of ['_links', '_embedded']) {
           if (result.hasOwnProperty(i)) {
             for (j in result[i]) {
               if (result[i].hasOwnProperty(j)) {
