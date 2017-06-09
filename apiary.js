@@ -8,7 +8,7 @@
 (function(window) {
 
   // Pseudo-constants:
-  var VERSION            = '2.0.0';
+  var VERSION            = '2.0.1';
   var BASE_URL           = 'https://api.w3.org/';
   var USER_PROFILE_URL   = 'https://www.w3.org/users/';
   var APIARY_ATTRIBUTE   = 'data-apiary';
@@ -55,7 +55,7 @@
    * @alias mode
    * @memberOf Apiary
    */
-  var mode = 'production';
+  var mode = MODE_PRODUCTION;
 
   /**
    * Dictionary of placeholders found on the page, and all DOM elements associated to each one of them.
@@ -221,7 +221,6 @@
   };
 
   var formatEntity = function(entity, expression) {
-    console.log('format: ' + entity.type + ', ' + expression)
     var result;
     // @TODO: get rid of these special checks when there's a smarter algorithm for hyperlinks.
     if (expression) {
@@ -250,8 +249,155 @@
     } else if (entity.hasOwnProperty('href') && entity.hasOwnProperty('name')) {
       result = '<a href="' + entity.href + '">' + entity.name + '</a>';
     }
-    console.log(result);
     return result;
+  };
+
+  /*
+   * Function: discr="function", name, staging, is-closed, _links.{lead.title, homepage.href?}.
+   * User: discr="user", family, given, id, name, work-title?, _links.self.href.
+   * Participation: created, individual, _links.(group.(href, title), self.href, user.(href, title)?, organization.(href, title)?).
+   * Group: discr="w3cgroup", description, id, name, type.
+   * Affiliation: discr="affiliation"|"organization", id, name.
+   * Spec: shortname, title, description?.
+   * Version: {_embedded.versions}[date, status, _links.self.href].
+   * Service: link, type, shortdesc?.
+   * Charter: start, end, initial-end.
+   *
+   * f=all: functions.
+   * g=all: groups.
+   * s=all: specs.
+   * a=all: affiliations.
+   * f=6823109: users, services.
+   * g=68239: users x 3, services, specs, charters, participations.
+   * g=46300&c=155: (none).
+   * s=dwbp: versions.
+   * s=2dcontext&v=20110525: groups, users, versions x 2.
+   * u=ggdj8tciu9kwwc4o4ww888ggkwok0c8: participations, groups, specs, affiliations.
+   * x=1913: groups.
+   * p=1503: users.
+   * a=52794: users, groups.
+   */
+
+  /**
+   * @TODO
+   */
+
+  var renderItem = function(entity, type) {
+      if (!entity)
+          return window.alert('Error: tried to render an undefined item')
+      var result;
+      if ('function' === entity.discr) {
+          // Function:
+          result = `<li class="list-group-item">
+              <a href="${buildLink(entity._links.self.href)}">
+                  ${entity.name}<span class="suffix">, led by ${entity._links.lead.title}</span>
+              </a>
+          </li>`;
+      } else if ('user' === entity.discr) {
+          // User:
+          var prefix = entity['work-title'] ? `<span class="suffix">, ${entity['work-title']}` : '';
+          result = `<li class="list-group-item">\
+              <a href="${buildLink(entity._links.self.href)}">\
+                  ${entity.name}${prefix}\
+              </a>\
+          </li>`;
+      } else if (entity.hasOwnProperty('created') && entity.hasOwnProperty('individual')) {
+          // Participation:
+          var label;
+          if (TYPE_GROUP === type) {
+              // We're interested in organisations and users:
+              if (entity.individual)
+                  // Person:
+                  label = `${entity._links.user.title} <span class="suffix">(individual)</span>`;
+              else
+                  // Organisation:
+                  label = `${entity._links.organization.title} <span class="suffix">(organization)</span>`;
+          } else
+              // TYPE_USER === type || TYPE_AFFILIATION === type; we're interested in groups:
+              label = entity._links.group.title;
+          result = `<li class="list-group-item">\
+              <a href="${buildLink(entity._links.self.href)}">\
+                  ${label}\
+              </a>\
+          </li>`;
+      } else if ('w3cgroup' === entity.discr) {
+          // Group:
+          var descr = entity.description ? ` title="${escapeHTML(entity.description)}"` : '',
+              type = '';
+          result = `<li class="list-group-item">\
+              <a${descr} href="${buildLink(entity.id, 'group')}">\
+                  ${entity.name}${type}\
+              </a>\
+          </li>`;
+      } else if (entity.hasOwnProperty('discr') && ('affiliation' === entity.discr || 'organization' === entity.discr)) {
+          // Affiliation:
+          result = `<li class="list-group-item">\
+              <a href="${buildLink(entity.id, 'affiliation')}">\
+                  ${entity.name}\
+              </a>\
+          </li>`;
+      } else if (entity.hasOwnProperty('shortname') && entity.hasOwnProperty('title')) {
+          // Spec:
+          var descr = entity.description ? ` title="${escapeHTML(entity.description)}"` : '';
+          result = `<li class="list-group-item">\
+              <a${descr} href="${buildLink(entity.shortname, 'spec')}">\
+                  ${entity.title} <span class="suffix">(<code>${entity.shortname}</code>)</suffix>\
+              </a>\
+          </li>`;
+      } else if (entity.hasOwnProperty('date') && entity.hasOwnProperty('status')) {
+          // Version:
+          result = `<li class="list-group-item">\
+              <a href="${buildLink(entity._links.self.href)}">\
+                  ${entity.date} <span class="suffix">(${entity.status})</suffix>\
+              </a>\
+          </li>`;
+      } else if (entity.hasOwnProperty('link') && entity.hasOwnProperty('type')) {
+          // Service:
+          if ('lists' === entity.type && entity.hasOwnProperty('shortdesc')) {
+              // Mailing list:
+              result = `<li class="list-group-item">
+                  <a href="${buildLink(entity._links.self.href)}">
+                      <code>${entity.shortdesc}</code>
+                      <span class="suffix">(mailing list)</span>
+                  </a>
+              </li>`;
+          } else if ('blog' === entity.type && entity.hasOwnProperty('shortdesc')) {
+              // Blog:
+              result = `<li class="list-group-item">
+                  <a href="${buildLink(entity._links.self.href)}">
+                      ${entity.shortdesc}
+                      <span class="suffix">(blog)</span>
+                  </a>
+              </li>`;
+          } else if ('tracker' === entity.type || 'repository' === entity.type || 'wiki' === entity.type || 'chat' === entity.type) {
+              // Tracker, repo, wiki or chat:
+              result = `<li class="list-group-item">
+                  <a href="${buildLink(entity._links.self.href)}">
+                      <code>${normaliseURI(entity.link)}</code>
+                      <span class="suffix">(${entity.type})</span>
+                  </a>
+              </li>`;
+          } else if ('rss' === entity.type) {
+              // RSS:
+              result = `<li class="list-group-item">
+                  <a href="${buildLink(entity._links.self.href)}">
+                      <code>${normaliseURI(entity.link)}</code>
+                      <span class="suffix">(RSS)</span>
+                  </a>
+              </li>`;
+          } else {
+              result = `<li class="list-group-item">[Unknown type of service]</li>\n`;
+          }
+      } else if (entity.hasOwnProperty('start') && entity.hasOwnProperty('end')) {
+          // Charter:
+          result = `<li class="list-group-item">\
+              <a href="${buildLink(entity._links.self.href)}">\
+                  ${entity.start} &ndash; ${entity.end}\
+              </a>\
+          </li>`;
+      } else
+          return '<li class="list-group-item">[Type of item not supported yet]</li>\n';
+      return result;
   };
 
   /**
