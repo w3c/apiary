@@ -79,6 +79,6 @@ $ jsdoc ./apiary.js --destination ./doc/ --access all --encoding utf8 --verbose
 
 ## Credits
 
-Copyright © 2015&ndash;2016 [World Wide Web Consortium](http://www.w3.org/)
+Copyright © 2015&ndash;2017 [World Wide Web Consortium](http://www.w3.org/)
 
 This project is licensed [under the terms of the MIT license](LICENSE.md).
