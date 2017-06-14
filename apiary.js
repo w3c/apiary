@@ -8,7 +8,7 @@
 (function(window) {
 
   // Pseudo-constants:
-  var VERSION            = '2.0.1';
+  var VERSION            = '2.0.2';
   var BASE_URL           = 'https://api.w3.org/';
   var USER_PROFILE_URL   = 'https://www.w3.org/users/';
   var APIARY_ATTRIBUTE   = 'data-apiary';
@@ -84,6 +84,7 @@
       window.removeEventListener('load', process);
     else if (window.detachEvent)
       window.detachEvent('onload', process);
+    console.log(`Apiary version ${VERSION}`);
     inferTypeAndId();
     if (apiKey && type && id) {
       findPlaceholders();
@@ -150,7 +151,7 @@
       placeholders[expression].push(candidates[c]);
     }
     if (MODE_DEBUG === mode)
-      console.log(`placeholders:\n${JSON.stringify(placeholders)}`);
+      console.debug(`placeholders:\n${JSON.stringify(placeholders)}`);
   };
 
   /**
@@ -192,7 +193,7 @@
         prefix = i.substr(0, i.indexOf(' '));
         rest = i.substr(i.indexOf(' ') + 1);
         if (MODE_DEBUG === mode)
-          console.log(i, prefix, rest);
+          console.debug(i, prefix, rest);
         if (json.hasOwnProperty(prefix)) {
           if ('object' === typeof json[prefix] && 1 === Object.keys(json[prefix]).length && json[prefix].hasOwnProperty('href'))
             get(json[prefix].href);
@@ -412,7 +413,7 @@
    */
   var injectValues = function(key, value, expression) {
     if (MODE_DEBUG === mode)
-      console.log(`injectValues:\n${JSON.stringify(key)}\n${JSON.stringify(value)}\n${JSON.stringify(expression)}`);
+      console.debug(`injectValues:\n${JSON.stringify(key)}\n${JSON.stringify(value)}\n${JSON.stringify(expression)}`);
     var chunk;
     if ('string' === typeof value || 'number' === typeof value) {
       chunk = String(value);
@@ -444,7 +445,7 @@
    */
   var get = function(url) {
     if (MODE_DEBUG === mode)
-      console.log('get:\n' + JSON.stringify(url));
+      console.debug('get:\n' + JSON.stringify(url));
     var newUrl = url;
     if (-1 === newUrl.indexOf('?')) {
       newUrl += '?apikey=' + apiKey + '&embed=true';
