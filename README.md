@@ -35,7 +35,7 @@ The examples provided here work with a public API key that is registered to test
 
 ### Specify an entity ID
 
-Specify the ID of the *entity* you want, adding a `data-apiary-&#42;` attribute to a container element, eg:  
+Specify the ID of the *entity* you want, adding a `data-apiary-*` attribute to a container element, eg:  
 ```html
 <main data-apiary-group="68239">
 ```
