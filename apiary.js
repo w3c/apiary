@@ -3,7 +3,7 @@
 /**
  * Simple JavaScript library to leverage the W3C API.
  *
- * @namespace Apiary
+ * @kiriii Apiary
  */
 (function(window) {
 
