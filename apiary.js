@@ -26,14 +26,6 @@
   // “Global” variables:
 
   /**
-   * API key, provided by the user.
-   *
-   * @alias apiKey
-   * @memberOf Apiary
-   */
-  var apiKey;
-
-  /**
    * Type of page; one of <code>TYPE_GROUP_PAGE</code> or <code>TYPE_USER_PAGE</code>.
    *
    * @alias type
@@ -86,30 +78,26 @@
       window.detachEvent('onload', process);
     console.log(`Apiary version ${VERSION}`);
     inferTypeAndId();
-    if (apiKey && type && id) {
+    if (type && id) {
       findPlaceholders();
       getDataForType();
     } else {
       window.alert('Apiary ' + VERSION + '\n' +
         'ERROR: could not get all necessary metadata.\n' +
-        'apiKey: “' + apiKey + '”\n' +
         'type: “' + type + '”\n' +
         'id: “' + id + '”');
     }
   };
 
   /**
-   * Infer the type of page (group, user…) and the ID of the corresponding entity; resolve API key.
+   * Infer the type of page (group, user…) and the ID of the corresponding entity.
    *
-   * After this function is done, variables <code>apiKey</code>, <code>type</code> and <code>id</code> should have their right values set.
+   * After this function is done, variables <code>type</code> and <code>id</code> should have their right values set.
    *
    * @alias inferTypeAndId
    * @memberOf Apiary
    */
   var inferTypeAndId = function() {
-    if (1 === document.querySelectorAll('html[data-apiary-key]').length) {
-      apiKey = document.querySelectorAll('html[data-apiary-key]')[0].getAttribute('data-apiary-key');
-    }
     if (document.querySelectorAll('[data-apiary-group]').length > 0) {
       type = TYPE_GROUP_PAGE;
       id = document.querySelectorAll('[data-apiary-group]')[0].getAttribute('data-apiary-group');
@@ -448,9 +436,9 @@
       console.debug('get:\n' + JSON.stringify(url));
     var newUrl = url;
     if (-1 === newUrl.indexOf('?')) {
-      newUrl += '?apikey=' + apiKey + '&embed=true';
+      newUrl += '?embed=true';
     } else {
-      newUrl += '&apikey=' + apiKey + '&embed=true';
+      newUrl += '&embed=true';
     }
     if (cache.hasOwnProperty(newUrl)) {
       crawl(cache[newUrl]);
